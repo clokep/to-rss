@@ -1,0 +1,18 @@
+# For parsing articles from Wikipedia.
+mwparserfromhell==0.5
+
+# For parsing the NHL and Patreon sites.
+beautifulsoup4==4.6.0
+iso8601==0.1.12
+
+# For generating RSS.
+feedgenerator==1.9
+
+# For downloading articles from Wikipedia.
+requests==2.18.1
+
+# For serving the resulting feed.
+Flask==0.12.2
+
+# For deploying.
+gunicorn==19.7.1
