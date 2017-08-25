@@ -273,7 +273,3 @@ def get_articles():
             print("Unable to render article from: {}".format(day))
 
     return feed.writeString('utf-8')
-
-
-if __name__ == '__main__':
-    get_articles()

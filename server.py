@@ -3,9 +3,9 @@ Simple Flask server that combines both the NHL and Wikipedia news parsers.
 
 """
 
-from jinja2 import Template
+from flask import abort, Flask
 
-from flask import Flask
+from jinja2 import Template
 
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts

@@ -66,7 +66,7 @@ def _get_news(name, page_url):
             author_link = author.a['href']
         else:
             author_link = None
-        
+
         # Get the date element and parse it to a datetime.
         date = article.find_all(class_='article-item__date')[0]
 
@@ -92,7 +92,3 @@ def nhl_news():
 def team_news(team):
     return _get_news('{} News'.format(VALID_TEAMS[team]),
                      '{}/{}/news/'.format(BASE_URL, team))
-
-
-if __name__ == '__main__':
-    team_news('islanders')

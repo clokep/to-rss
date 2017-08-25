@@ -100,7 +100,3 @@ def patreon_posts(user):
                       pubdate=iso8601.parse_date(post['attributes']['published_at']))
 
     return feed.writeString('utf-8')
-
-
-if __name__ == '__main__':
-    patreon_news('Project64')
