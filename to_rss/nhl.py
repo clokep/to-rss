@@ -1,8 +1,8 @@
-from datetime import datetime
+from bs4 import BeautifulSoup
 
 import feedgenerator
 
-from bs4 import BeautifulSoup
+import iso8601
 
 import requests
 
@@ -80,7 +80,7 @@ def _get_news(name, page_url):
                       description=str(preview),
                       author_name=author_name,
                       author_link=author_link,
-                      pubdate=datetime.strptime(date['data-date'], "%Y-%m-%dT%H:%M:%S%z"))
+                      pubdate=iso8601.parse_date(date['data-date']))
 
     return feed.writeString('utf-8')
 
