@@ -2,4 +2,38 @@
 
 {% block body %}
 <h2>Patreon Posts</h2>
+
+<p class="lead">
+  <a href="https://patreon.com">Patreon.com</a> offers a subscription service
+  for content creators and offers a way to post updates to them. The updates are
+  only available by registering and subscribing over email or by visiting the
+  website. This provides an RSS feed for individual users of Patreon, you can
+  access an individual by filling out the form below.
+</p>
+
+<p class="lead">
+  Note that private posts will show up in the feed, but won't have any content.
+  You can follow the link to the full article in your RSS reader to read the
+  content (after signing into Patreon).
+</p>
+
+<form id="patreonForm">
+  <div class="form-group">
+    <label for="patreonUsername">Email address</label>
+    <input class="form-control" id="patreonUsername" aria-describedby="usernameHelp" placeholder="Enter Patreon username">
+    <small id="usernameHelp" class="form-text text-muted">Enter the Patreon username you wish to have an RSS feed for.</small>
+  </div>
+  <button type="submit" id="patreonFormSubmit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#patreonFormSubmit").click(function(){
+    $("#patreonForm").attr('action', window.location + $('#patreonUsername').val() + '/');
+  });
+});
+</script>
 {% endblock %}

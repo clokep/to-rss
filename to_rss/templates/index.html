@@ -1,9 +1,63 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<ul>
-  <li><a href="/nhl/">NHL News</a></li>
-  <li><a href="/patreon/">Patreon</a></li>
-  <li><a href="/wikipedia/">Wikipedia</a></li>
-</ul>
+<p class="lead">
+  <h3>The Background</h3>
+
+  <a href="https://en.wikipedia.org/wiki/RSS">RSS</a> is a great way to
+  distribute news (or really any article) in a distributed manner for reading by
+  news aggregators. This helps automate pulling of content so that you don't
+  need to go to a bunch of separate sites each day to see what's new (normally
+  this is called <a href="https://en.wikipedia.org/wiki/Web_syndication">web
+  syndication</a>).
+</p>
+
+<p class="lead">
+  <h3>Why?</h3>
+
+  Unfortunately, with the rise of social media, there's a bunch of sites out
+  there which no longer feel the need to provide syndication feeds (or want you
+  to ingest it only by signing up for their platform).
+
+  (As an aside, This causes an <a href="https://en.wikipedia.org/wiki/Information_silo">information silo</a>, but that's not really
+</p>
+
+<p class="lead">
+  <h3>What?</h3>
+
+  We try to solve this problem by giving syndication feeds (in the form of RSS
+  feeds) to sites that could easily have feeds. You can find a list below of
+  sites, each one might have multiple feeds, click the links below to find out
+  more.
+</p>
+
+<p class="lead">
+  <dl>
+    <dt><a href="/nhl/">NHL</a></dt>
+    <dd>
+      <a href="https://www.nhl.com">NHL.com</a> provides updates on the NHL (and
+      also runs each individual team's site). They used to provide their news as
+      an RSS feed, but no longer seem to.
+    </dd>
+    <dt><a href="/patreon/">Patreon</a></dt>
+    <dd>
+      <a href="https://patreon.com">Patreon.com</a> offers a subscription
+      service for content creators and offers a way to post updates to them. The
+      updates are only available by registering and subscribing over email or by
+      visiting the website.
+    </dd>
+    <dt><a href="/wikipedia/">Wikipedia</a></dt>
+    <dd>
+      The <a href="https://wikipedia.org">Wikipedia</a> community provides
+      articles on various current events, news, etc. that are nice to check
+      daily.
+    </dd>
+  </dl>
+
+  <!--See a source missing? Let us know.-->
+</p>
+
+<p class="lead">
+  <h3>How?</h3>
+</p>
 {% endblock %}
