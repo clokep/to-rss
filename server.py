@@ -1,5 +1,5 @@
 """
-Simple Flask server that combines both the NHL and Wikipedia news parsers.
+Simple Flask server that provides paths to the various RSS feeds.
 
 """
 
