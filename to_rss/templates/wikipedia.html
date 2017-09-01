@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<h2><a href="/wikipedia/current_events/">Wikipedia Current Events</a></h2>
+<h2>Wikipedia</h2>
+
+<p class="head">
+  The <a href="https://wikipedia.org">Wikipedia</a> community provides a variety
+  of articles are useful to check daily. Some of these have RSS feeds (via the
+  <a href="https://en.wikipedia.org/wiki/MediaWiki">MediaWiki</a>
+  <a href="https://en.wikipedia.org/w/api.php?action=help&modules=featuredfeed">featuredfeed plugin</a>),
+  but not all do! A mixed of custom and standard RSS feeds is below:
+
+  <ul>
+    <li><a href="/wikipedia/current_events/">Current Events</a></li>
+    <li><a href="https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=potd">Picture of the Day</a></li>
+    <li><a href="https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=onthisday">On This Day</a></li>
+    <li><a href="http://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured">Featured Article</a></li>
+  </ul>
+</p>
 {% endblock %}

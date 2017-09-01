@@ -1,10 +1,25 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<h2><a href="/nhl/news/">NHL Headlines</a></h2>
-<ul>
-  {% for short, name in teams|dictsort(false, 'value') %}
-  <li><a href="/nhl/{{ short }}/">{{ name }}</a></li>
-  {% endfor %}
-</ul>
+<h2>NHL News</h2>
+
+<p class="lead">
+  <a href="https://nhl.com">NHL.com</a> hosts the news feeds for the NHL itself
+  and the individual teams. As far as I know there is no syndication feeds for
+  following this news (although there used to be).
+
+  A feed is provided for the <a href="/nhl/news/">NHL Headlines</a> as well as
+  for each individual team:
+  <div class="row">
+    {% for column in teams|dictsort(false, 'value')|slice(4) %}
+    <div class="col-12 col-sm-6 col-lg-3">
+      <ul>
+        {% for short, name in column %}
+        <li><a href="/nhl/{{ short }}/">{{ name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+</p>
 {% endblock %}
