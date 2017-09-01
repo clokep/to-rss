@@ -1,7 +1,9 @@
 ## To RSS
 
+[![pipeline status](https://gitlab.com/clokep/to-rss/badges/master/pipeline.svg)](https://gitlab.com/clokep/to-rss/commits/master)
+
 This project aims to provide RSS feeds for platforms that should just provide
-RSS feeds. It supports a few different endpoints:
+RSS feeds. It supports a few different endpoints.
 
 Information is pulled on demand on each refresh of the page (and is always
 current).
