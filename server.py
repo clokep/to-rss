@@ -3,6 +3,8 @@ Simple Flask server that provides paths to the various RSS feeds.
 
 """
 
+from os import path
+
 from flask import abort, Flask
 
 from jinja2 import Environment, FileSystemLoader
@@ -16,7 +18,8 @@ application = Flask(__name__)
 app = application
 
 # Jinja2 environment.
-env = Environment(loader=FileSystemLoader('to_rss/templates'))
+root = path.dirname(path.abspath(__file__))
+env = Environment(loader=FileSystemLoader(path.join(root, 'to_rss', 'templates')))
 
 
 @application.route('/')
