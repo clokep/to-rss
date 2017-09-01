@@ -57,7 +57,7 @@ def serve_nhl():
 <h2><a href="/nhl/news/">NHL Headlines</a></h2>
 
 <ul>
-{% for short, name in teams %}
+{% for short, name in teams|dictsort(false, 'value') %}
 <li><a href="/nhl/{{ short }}/">{{ name }}</a></li>
 {% endfor %}
 </ul>
@@ -65,7 +65,7 @@ def serve_nhl():
 </body>
 </html>''')
 
-    return template.render(teams=VALID_TEAMS.items())
+    return template.render(teams=VALID_TEAMS)
 
 
 @application.route('/nhl/news/')
