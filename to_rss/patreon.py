@@ -92,9 +92,16 @@ def patreon_posts(user):
 
     # Iterate over each article.
     for post in data['data']:
+        # Some articles don't have their content available.
+        try:
+            content = post['attributes']['content']
+        except KeyError:
+            content = 'This posts if for Patrons only. You must pledge ${:.2f}'.format(
+                float(post['attributes']['min_cents_pledged_to_view']) / 100)
+
         feed.add_item(title=post['attributes']['title'],
                       link=post['attributes']['url'],
-                      description=post['attributes']['content'],
+                      description=content,
                       author_name=user,
                       author_link=PATREON_URL.format(user),
                       pubdate=iso8601.parse_date(post['attributes']['published_at']))
