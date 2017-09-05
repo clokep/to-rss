@@ -1,3 +1,6 @@
+# Fabric v2.
+https://codeload.github.com/fabric/fabric/zip/fec3a22ee89900500ae731913fd33f9b56e89f46
+
 # For running tests.
 pytest==3.1.3
 
