@@ -6,8 +6,8 @@ from invoke import task
 import requests
 
 
-@task
-def reload(c):
+@task(name='reload')
+def _reload(c):
     """Restart the web-app."""
     with open('.pythonanywhere.json', 'r') as f:
         # Has keys api_token, username, and domain_name.
@@ -26,7 +26,7 @@ def reload(c):
         sys.exit(1)
 
 
-@task(post=[reload])
+@task(post=[_reload])
 def deploy(c):
     """Deploy a new version of to-rss."""
     with c.cd('to-rss'):
