@@ -6,11 +6,12 @@ import iso8601
 
 import requests
 
-API_URL = 'https://api.patreon.com/stream?json-api-version=1.0'
+API_URL = 'https://api.patreon.com/stream'
 PATREON_URL = 'https://www.patreon.com/{}'
 
 
 def get_patreon_posts(user_id):
+    """Gets a list of a user's posts."""
     # Fields to include in the response.
     fields = {
         'post': [
@@ -57,6 +58,9 @@ def get_patreon_posts(user_id):
     })
     params['page[cursor]'] = 'null'
 
+    # Some default properties.
+    params['json-api-version'] = '1.0'
+
     # Get the JSON API response.
     response = requests.get(API_URL, params=params)
 
@@ -84,9 +88,13 @@ def patreon_posts(user):
     data = get_patreon_posts(user_id)
 
     # Get a description.
-    campaigns = [d for d in data['included'] if d['type'] == 'campaign']
-    assert len(campaigns) == 1
-    description = campaigns[0]['attributes']['summary']
+    try:
+        included = data['include']
+    except KeyError:
+        description = '{} on Patreon'.format(user)
+    else:
+        campaigns = [d for d in data['included'] if d['type'] == 'campaign']
+        description = campaigns[0]['attributes']['summary']
 
     feed = feedgenerator.Rss201rev2Feed(user, PATREON_URL.format(user), description)
 
