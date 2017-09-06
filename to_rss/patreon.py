@@ -93,7 +93,7 @@ def patreon_posts(user):
     except KeyError:
         description = '{} on Patreon'.format(user)
     else:
-        campaigns = [d for d in data['included'] if d['type'] == 'campaign']
+        campaigns = [d for d in included if d['type'] == 'campaign']
         description = campaigns[0]['attributes']['summary']
 
     feed = feedgenerator.Rss201rev2Feed(user, PATREON_URL.format(user), description)
