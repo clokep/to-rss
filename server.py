@@ -75,6 +75,12 @@ def serve_patreon_user(user):
 
 
 # Pottermore endpoints.
+@application.route('/pottermore/')
+def serve_pottermore():
+    template = env.get_template('pottermore.html')
+    return template.render()
+
+
 @application.route('/pottermore/news/')
 def serve_pottermore_news():
     return pottermore_page('news', 'Pottermore News')
