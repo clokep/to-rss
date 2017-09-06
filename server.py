@@ -11,6 +11,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts
+from to_rss.pottermore import pottermore_news
 from to_rss.wikipedia import get_articles
 
 application = Flask(__name__)
@@ -71,6 +72,12 @@ def serve_patreon():
 @application.route('/patreon/<user>/')
 def serve_patreon_user(user):
     return patreon_posts(user)
+
+
+# Pottermore endpoints.
+@application.route('/pottermore/news/')
+def serve_pottermore_news():
+    return pottermore_news()
 
 
 if __name__ == "__main__":
