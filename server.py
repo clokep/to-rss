@@ -5,7 +5,7 @@ Simple Flask server that provides paths to the various RSS feeds.
 
 from os import path
 
-from flask import abort, Flask
+from flask import abort, Flask, Response
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -39,7 +39,7 @@ def serve_wikipedia():
 
 @application.route('/wikipedia/current_events/')
 def serve_wikipedia_current_events():
-    return get_articles()
+    return Response(get_articles(), mimetype='application/rss+xml')
 
 
 # NHL end points.
@@ -51,7 +51,7 @@ def serve_nhl():
 
 @application.route('/nhl/news/')
 def serve_nhl_news():
-    return nhl_news()
+    return Response(nhl_news(), mimetype='application/rss+xml')
 
 
 @application.route('/nhl/<team>/')
@@ -59,7 +59,7 @@ def serve_nhl_team_news(team):
     if team not in VALID_TEAMS:
         abort(404)
 
-    return team_news(team)
+    return Response(team_news(team), mimetype='application/rss+xml')
 
 
 # Patreon end points.
@@ -71,7 +71,7 @@ def serve_patreon():
 
 @application.route('/patreon/<user>/')
 def serve_patreon_user(user):
-    return patreon_posts(user)
+    return Response(patreon_posts(user), mimetype='application/rss+xml')
 
 
 # Pottermore endpoints.
@@ -83,12 +83,12 @@ def serve_pottermore():
 
 @application.route('/pottermore/news/')
 def serve_pottermore_news():
-    return pottermore_page('news', 'Pottermore News')
+    return Response(pottermore_page('news', 'Pottermore News'), mimetype='application/rss+xml')
 
 
 @application.route('/pottermore/features/')
 def serve_pottermore_features():
-    return pottermore_page('features', 'Pottermore Features')
+    return Response(pottermore_page('features', 'Pottermore Features'), mimetype='application/rss+xml')
 
 
 if __name__ == "__main__":
