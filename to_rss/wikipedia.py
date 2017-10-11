@@ -246,11 +246,14 @@ def get_articles():
         article = get_article_by_date(day)
         # Parse the article contents.
         wikicode = mwparserfromhell.parse(article)
-        nodes = wikicode.filter(recursive=False, matches=filter_templates)
+
+        # Current event pages have a top-level template.
+        template = wikicode.get(0)
+        nodes = template.get('content').value.filter(recursive=False)
 
         # Remove all nodes before / after the start / end comments.
         start = 0
-        end = len(nodes) - 1
+        end = len(nodes)
         for i, node in enumerate(nodes):
             if isinstance(node, Comment):
                 if 'All news items below this line' in node:
@@ -262,8 +265,8 @@ def get_articles():
         # Ignore nodes outside of the start/end.
         nodes = nodes[start:end]
 
+        # Convert the Wikicode to HTML.
         composer = WikicodeToHtmlComposer()
-
         try:
             feed.add_item(title=u'Current events: {}'.format(day),
                           link=get_article_url(day),
