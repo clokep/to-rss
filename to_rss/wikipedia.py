@@ -249,28 +249,14 @@ def get_articles():
 
         # Current event pages have a top-level template.
         template = wikicode.get(0)
-        nodes = template.get('content').value.filter(recursive=False)
-
-        # Remove all nodes before / after the start / end comments.
-        start = 0
-        end = len(nodes)
-        for i, node in enumerate(nodes):
-            if isinstance(node, Comment):
-                if 'All news items below this line' in node:
-                    start = i + 1
-                elif 'All news items above this line' in node:
-                    end = i
-                    break
-
-        # Ignore nodes outside of the start/end.
-        nodes = nodes[start:end]
+        content = template.get('content').value
 
         # Convert the Wikicode to HTML.
         composer = WikicodeToHtmlComposer()
         try:
             feed.add_item(title=u'Current events: {}'.format(day),
                           link=get_article_url(day),
-                          description=composer.compose(nodes),
+                          description=composer.compose(content),
                           pubdate=datetime(*day.timetuple()[:3]))
         except HtmlComposingError:
             print("Unable to render article from: {}".format(day))
