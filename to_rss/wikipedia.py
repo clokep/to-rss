@@ -248,17 +248,23 @@ def get_articles():
         wikicode = mwparserfromhell.parse(article)
 
         # Current event pages have a top-level template.
-        template = wikicode.get(0)
-        content = template.get('content').value
+        for template in wikicode.ifilter_templates():
+            if template.name == 'Current events':
+                content = template.get('content').value
 
-        # Convert the Wikicode to HTML.
-        composer = WikicodeToHtmlComposer()
-        try:
-            feed.add_item(title=u'Current events: {}'.format(day),
-                          link=get_article_url(day),
-                          description=composer.compose(content),
-                          pubdate=datetime(*day.timetuple()[:3]))
-        except HtmlComposingError:
-            print("Unable to render article from: {}".format(day))
+                # Convert the Wikicode to HTML.
+                composer = WikicodeToHtmlComposer()
+                try:
+                    feed.add_item(title=u'Current events: {}'.format(day),
+                                  link=get_article_url(day),
+                                  description=composer.compose(content),
+                                  pubdate=datetime(*day.timetuple()[:3]))
+                except HtmlComposingError:
+                    print("Unable to render article from: {}".format(day))
+
+                # Stop processing this article.
+                break
+
+        # TODO If the template is not found, we should do something.
 
     return feed.writeString('utf-8')
