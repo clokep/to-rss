@@ -1,4 +1,6 @@
 [flake8]
+# We have newlines between each package.
+ignore = I202
 exclude =
     .git,
     __pycache__,
