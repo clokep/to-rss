@@ -1,5 +1,5 @@
 # For parsing articles from Wikipedia.
-mwparserfromhell==0.5
+mwparserfromhell==0.5.1
 
 # For parsing the NHL and Patreon sites.
 beautifulsoup4==4.6.0
