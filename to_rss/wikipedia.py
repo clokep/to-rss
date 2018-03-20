@@ -24,7 +24,7 @@ class HtmlComposingError(Exception):
     pass
 
 
-class WikicodeToHtmlComposer(object):
+class WikicodeToHtmlComposer:
     """
     Format HTML from Parsed Wikicode.
 
@@ -201,30 +201,24 @@ class WikicodeToHtmlComposer(object):
         return u''.join(self._compose_parts(obj)) + u''.join(self._close_stack())
 
 
-def filter_templates(node):
-    """Remove nodes that are only whitespace."""
-    return not isinstance(node, Template)
-
-
-def get_article_url(lookup_date):
+def get_current_events_by_date(lookup_date):
     # Format the date as a string, this is formatted using the #time extension
     # to Wiki syntax:
     # https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#.23time with
     # a format of "Y F j". This is awkward because we want the day *not* zero
     # padded, but the month as a string.
     datestr = '{} {} {}'.format(lookup_date.year, lookup_date.strftime('%B'), lookup_date.day)
-    return 'https://en.wikipedia.org/wiki/Portal:Current_events/' + datestr
+    return 'Portal:Current_events/' + datestr
 
 
-def get_article_by_date(lookup_date):
-    """
-    Returns the article content for a particular day, this requests a page like
-    https://en.wikipedia.org/wiki/Portal:Current_events/2017_May_5
+def get_article_url(name):
+    return 'https://en.wikipedia.org/wiki/' + name
 
-    """
-    response = requests.get(get_article_url(lookup_date), params={'action': 'raw'})
 
-    return response.content
+def get_article(url):
+    """Fetches and returns the article content as a string."""
+    response = requests.get(url, params={'action': 'raw'})
+    return response.text
 
 
 def get_articles():
@@ -247,7 +241,8 @@ def get_articles():
         day -= timedelta(days=1)
 
         # Download the article content.
-        article = get_article_by_date(day)
+        url = get_article_url(get_current_events_by_date(day))
+        article = get_article(url)
         # Parse the article contents.
         wikicode = mwparserfromhell.parse(article)
 
@@ -260,7 +255,7 @@ def get_articles():
                 composer = WikicodeToHtmlComposer()
                 try:
                     feed.add_item(title=u'Current events: {}'.format(day),
-                                  link=get_article_url(day),
+                                  link=url,
                                   description=composer.compose(content),
                                   pubdate=datetime(*day.timetuple()[:3]))
                 except HtmlComposingError:
