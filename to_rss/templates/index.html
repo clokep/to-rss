@@ -34,27 +34,28 @@
   <dl>
     <dt><a href="/nhl/">NHL</a></dt>
     <dd>
-      <a href="https://www.nhl.com">NHL.com</a> provides updates on the NHL (and
-      also runs each individual team's site). They used to provide their news as
-      an RSS feed, but no longer seem to.
+      <a href="https://www.nhl.com" target="_blank">NHL.com</a> provides updates
+      on the NHL (and also runs each individual team's site). They used to
+      provide their news as an RSS feed, but no longer seem to.
     </dd>
     <dt><a href="/patreon/">Patreon</a></dt>
     <dd>
-      <a href="https://patreon.com">Patreon.com</a> offers a subscription
-      service for content creators and offers a way to post updates to them. The
-      updates are only available by registering and subscribing over email or by
-      visiting the website.
+      <a href="https://patreon.com" target="_blank">Patreon.com</a> offers a
+      subscription service for content creators and offers a way to post updates
+      to them. The updates are only available by registering and subscribing
+      over email or by visiting the website.
     </dd>
     <dt><a href="/pottermore/">Pottermore</a></dt>
     <dd>
-      <a href="https://pottermore.com">Pottermore</a> offers news, features and
-      other digital content to expand the Harry Potter universe.
+      <a href="https://pottermore.com" target="_blank">Pottermore</a> offers
+      news, features and other digital content to expand the Harry Potter
+      universe.
     </dd>
     <dt><a href="/wikipedia/">Wikipedia</a></dt>
     <dd>
-      The <a href="https://wikipedia.org">Wikipedia</a> community provides
-      articles on various current events, news, etc. that are nice to check
-      daily.
+      The <a href="https://wikipedia.org" target="_blank">Wikipedia</a>
+      community provides articles on various current events, news, etc. that are
+      nice to check daily.
     </dd>
   </dl>
 
@@ -63,5 +64,20 @@
 
 <p class="lead">
   <h3>How?</h3>
+
+  This is done by downloading the content using
+  <a href="http://python-requests.org" target="_blank">requests</a> and parsing it (usually with
+  <a href="https://www.crummy.com/software/BeautifulSoup/" target="_blank">BeautifulSoup</a>,
+  but Wikipedia is parsed using
+  <a href="http://mwparserfromhell.readthedocs.io" target="_blank">mwparserfromhell</a>).
+  The content is then turned into an RSS feed using
+  <a href="https://github.com/getpelican/feedgenerator/" target="_blank">feedgenerator</a>.
+  Content is dynamically generated (each time you load an RSS feed it pulls the
+  current content and recreates the feed).
+</p>
+
+<p>
+  See a bug? Think another site should be added? Please
+  <a href="https://gitlab.com/clokep/to-rss/issues">make a suggestion</a>!
 </p>
 {% endblock %}
