@@ -1,14 +1,10 @@
 from datetime import date, datetime, timedelta
-from urllib.parse import quote as url_quote
 
 import feedgenerator
 
-import mwparserfromhell
-from mwparserfromhell.definitions import MARKUP_TO_HTML
-from mwparserfromhell.nodes import Comment, ExternalLink, HTMLEntity, Tag, Template, Text, Wikilink
-from mwparserfromhell.wikicode import Wikicode
-
 import mwcomposerfromhell
+
+import mwparserfromhell
 
 import requests
 
