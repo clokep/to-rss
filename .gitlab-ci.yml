@@ -6,7 +6,3 @@ before_script:
 check_style:
   script:
     - flake8
-
-test:
-  script:
-    - py.test
