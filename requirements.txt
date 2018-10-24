@@ -16,7 +16,7 @@ requests==2.20.0
 Flask==1.0.2
 
 # For deploying.
-gunicorn==19.7.1
+gunicorn==19.9.0
 
 # For loading configuration.
 python-dotenv==0.9.1
