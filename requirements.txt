@@ -3,7 +3,7 @@ mwparserfromhell==0.5.1
 mwcomposerfromhell==0.1
 
 # For parsing the NHL and Patreon sites.
-beautifulsoup4==4.6.0
+beautifulsoup4==4.6.3
 iso8601==0.1.12
 
 # For generating RSS.
