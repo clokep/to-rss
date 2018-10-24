@@ -2,12 +2,16 @@
 Simple Flask server that provides paths to the various RSS feeds.
 
 """
-
+import os
 from os import path
+
+from dotenv import load_dotenv
 
 from flask import abort, Flask, Response
 
 from jinja2 import Environment, FileSystemLoader
+
+import sentry_sdk
 
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts
@@ -92,4 +96,11 @@ def serve_pottermore_features():
 
 
 if __name__ == "__main__":
+    # Load .env from the same directory as this file.
+    load_dotenv(path.dirname(__file__))
+
+    sentry_url = os.getenv('SENTRY_URL')
+    if sentry_url:
+        sentry_sdk.init(sentry_url)
+
     application.run()
