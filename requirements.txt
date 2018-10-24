@@ -3,20 +3,20 @@ mwparserfromhell==0.5.1
 mwcomposerfromhell==0.1
 
 # For parsing the NHL and Patreon sites.
-beautifulsoup4==4.6.0
+beautifulsoup4==4.6.3
 iso8601==0.1.12
 
 # For generating RSS.
 feedgenerator==1.9
 
 # For downloading articles from Wikipedia.
-requests==2.18.4
+requests==2.20.0
 
 # For serving the resulting feed.
-Flask==0.12.2
+Flask==1.0.2
 
 # For deploying.
-gunicorn==19.7.1
+gunicorn==19.9.0
 
 # For loading configuration.
 python-dotenv==0.9.1
