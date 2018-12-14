@@ -19,7 +19,7 @@ Flask==1.0.2
 gunicorn==19.9.0
 
 # For loading configuration.
-python-dotenv==0.10.0
+python-dotenv==0.10.1
 
 # For error reporting.
 sentry-sdk==0.6.1
