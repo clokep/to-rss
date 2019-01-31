@@ -12,22 +12,29 @@ from flask import abort, Flask, Response
 from jinja2 import Environment, FileSystemLoader
 
 import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts
 from to_rss.pottermore import pottermore_page
 from to_rss.wikipedia import get_articles
 
-application = Flask(__name__)
-# PythonAnywhere likes to call this 'app'.
-app = application
+app = Flask(__name__)
 
 # Jinja2 environment.
 root = path.dirname(path.abspath(__file__))
 env = Environment(loader=FileSystemLoader(path.join(root, 'to_rss', 'templates')))
 
+# Load .env from the same directory as this file.
+load_dotenv(path.join(path.dirname(__file__), '.env'))
 
-@application.route('/')
+# Configure Sentry (if credentials are available).
+sentry_dsn = os.getenv('SENTRY_DSN')
+if sentry_dsn:
+    sentry_sdk.init(dsn=sentry_dsn, integrations=[FlaskIntegration()])
+
+
+@app.route('/')
 def serve_about():
     """A link to each endpoint that's supported."""
     template = env.get_template('index.html')
@@ -35,30 +42,30 @@ def serve_about():
 
 
 # Wikipedia end points.
-@application.route('/wikipedia/')
+@app.route('/wikipedia/')
 def serve_wikipedia():
     template = env.get_template('wikipedia.html')
     return template.render()
 
 
-@application.route('/wikipedia/current_events/')
+@app.route('/wikipedia/current_events/')
 def serve_wikipedia_current_events():
     return Response(get_articles(), mimetype='application/rss+xml')
 
 
 # NHL end points.
-@application.route('/nhl/')
+@app.route('/nhl/')
 def serve_nhl():
     template = env.get_template('nhl.html')
     return template.render(teams=VALID_TEAMS)
 
 
-@application.route('/nhl/news/')
+@app.route('/nhl/news/')
 def serve_nhl_news():
     return Response(nhl_news(), mimetype='application/rss+xml')
 
 
-@application.route('/nhl/<team>/')
+@app.route('/nhl/<team>/')
 def serve_nhl_team_news(team):
     if team not in VALID_TEAMS:
         abort(404)
@@ -67,40 +74,33 @@ def serve_nhl_team_news(team):
 
 
 # Patreon end points.
-@application.route('/patreon/')
+@app.route('/patreon/')
 def serve_patreon():
     template = env.get_template('patreon.html')
     return template.render()
 
 
-@application.route('/patreon/<user>/')
+@app.route('/patreon/<user>/')
 def serve_patreon_user(user):
     return Response(patreon_posts(user), mimetype='application/rss+xml')
 
 
 # Pottermore endpoints.
-@application.route('/pottermore/')
+@app.route('/pottermore/')
 def serve_pottermore():
     template = env.get_template('pottermore.html')
     return template.render()
 
 
-@application.route('/pottermore/news/')
+@app.route('/pottermore/news/')
 def serve_pottermore_news():
     return Response(pottermore_page('news', 'Pottermore News'), mimetype='application/rss+xml')
 
 
-@application.route('/pottermore/features/')
+@app.route('/pottermore/features/')
 def serve_pottermore_features():
     return Response(pottermore_page('features', 'Pottermore Features'), mimetype='application/rss+xml')
 
 
 if __name__ == "__main__":
-    # Load .env from the same directory as this file.
-    load_dotenv(path.dirname(__file__))
-
-    sentry_url = os.getenv('SENTRY_URL')
-    if sentry_url:
-        sentry_sdk.init(sentry_url)
-
-    application.run()
+    app.run()
