@@ -103,4 +103,5 @@ def serve_pottermore_features():
 
 
 if __name__ == "__main__":
-    app.run()
+    # This is only used for development purposes, run `python server.py`.
+    app.run(debug=True)
