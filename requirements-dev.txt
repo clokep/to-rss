@@ -2,6 +2,6 @@
 https://codeload.github.com/fabric/fabric/zip/2d89b122ed05550c0b4b1fd8836b4a31060ad2a5
 
 # Style checking.
-flake8==3.6.0
+flake8==3.7.3
 flake8-builtins==1.4.1      # For disallowing shadowing of Python built-ins.
 flake8-import-order==0.18
