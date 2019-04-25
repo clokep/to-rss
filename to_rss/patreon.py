@@ -80,6 +80,7 @@ def get_patreon_posts(user_id):
 
     # Get the JSON API response.
     response = requests.get(API_URL, params=params)
+    response.raise_for_status()
 
     return response.json()
 
@@ -87,6 +88,7 @@ def get_patreon_posts(user_id):
 def get_user_id(user):
     """Get the user ID from a user name."""
     response = requests.get(PATREON_URL.format(user))
+    response.raise_for_status()
 
     # Process the HTML using BeautifulSoup!
     soup = BeautifulSoup(response.content, 'html.parser')
