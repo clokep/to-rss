@@ -149,7 +149,7 @@ def patreon_posts(user):
                 min_cents_pledged_to_view = '${:.2f}'.format(
                     float(post['attributes']['min_cents_pledged_to_view']) / 100)
 
-            content = 'This posts if for Patrons only. You must pledge {}.'.format(
+            content = 'This posts is for Patrons only. You must pledge {}.'.format(
                 min_cents_pledged_to_view)
 
         # Pull the current author's information.
