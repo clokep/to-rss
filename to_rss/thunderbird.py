@@ -1,12 +1,10 @@
-from datetime import date, datetime, timedelta
+from datetime import datetime
 
 import feedgenerator
 
 import mwcomposerfromhell
 
 import mwparserfromhell
-
-import requests
 
 from to_rss.wikipedia import get_article
 
@@ -25,7 +23,6 @@ def get_status_meetings():
     wikicode = mwparserfromhell.parse(data)
 
     # Each table represents a year.
-    year = None
     for table in wikicode.ifilter_tags(recursive=False, matches=lambda el: el.tag == 'table'):
         # Each link in the contents is a separate meeting.
         for meeting_link in table.contents.ifilter_wikilinks(recursive=True):
@@ -67,7 +64,7 @@ def thunderbird_status_meetings():
                           description=mwcomposerfromhell.compose(wikicode),
                           pubdate=datetime(*meeting_date.timetuple()[:3]))
         except mwcomposerfromhell.HtmlComposingError:
-            print("Unable to render article from: {}".format(day))
+            print("Unable to render article from: {}".format(meeting_date))
 
         # Include 10 articles.
         article_count += 1
