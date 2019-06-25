@@ -4,3 +4,6 @@
 # Configuration files with sensitive data.
 .env
 .pythonanywhere.json
+
+# Editor files.
+.idea

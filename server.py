@@ -17,6 +17,7 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts
 from to_rss.pottermore import pottermore_page
+from to_rss.thunderbird import thunderbird_status_meetings
 from to_rss.wikipedia import get_articles
 
 app = Flask(__name__)
@@ -100,6 +101,18 @@ def serve_pottermore_news():
 @app.route('/pottermore/features/')
 def serve_pottermore_features():
     return Response(pottermore_page('features', 'Pottermore Features'), mimetype='application/rss+xml')
+
+
+# Thunderbird endpoints.
+@app.route('/thunderbird/')
+def serve_thunderbird():
+    template = env.get_template('thunderbird.html')
+    return template.render()
+
+
+@app.route('/thunderbird/status-meetings/')
+def serve_thunderbird_status_meetings():
+    return Response(thunderbird_status_meetings(), mimetype='application/rss+xml')
 
 
 if __name__ == "__main__":
