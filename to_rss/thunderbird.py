@@ -8,9 +8,12 @@ import mwparserfromhell
 
 from to_rss.wikipedia import get_article
 
+# The Mozilla Wiki base URL.
+BASE_URL = 'https://wiki.mozilla.org/'
+
 
 def get_article_url(name):
-    return 'https://wiki.mozilla.org/' + name
+    return BASE_URL + name
 
 
 def get_status_meetings():
@@ -45,6 +48,13 @@ def thunderbird_status_meetings():
 
     article_count = 0
 
+    # Add custom templates that are necessary.
+    templates = {
+        # See https://wiki.mozilla.org/Template:Bug
+        'bug': mwparserfromhell.parse(
+            '[https://bugzilla.mozilla.org/show_bug.cgi?id={{{1}}} {{{2|bug {{{1}}}}}}]'),
+    }
+
     for meeting_date, meeting_title in get_status_meetings():
         # Download the article content.
         url = get_article_url(meeting_title)
@@ -57,14 +67,21 @@ def thunderbird_status_meetings():
         # Parse the article contents.
         wikicode = mwparserfromhell.parse(meeting_notes)
 
+        # Create a new composer with some templates pre-built into it.
+        composer = mwcomposerfromhell.WikicodeToHtmlComposer(
+            base_url=BASE_URL, template_store=templates)
+
         try:
-            feed.add_item(title=u'Status Meeting: {}'.format(meeting_date),
-                          link=url,
-                          # Convert the Wikicode to HTML.
-                          description=mwcomposerfromhell.compose(wikicode),
-                          pubdate=datetime(*meeting_date.timetuple()[:3]))
+            composer.compose(wikicode)
         except mwcomposerfromhell.HtmlComposingError:
-            print("Unable to render article from: {}".format(meeting_date))
+            print("Unable to render status meeting notes from: {}".format(meeting_date))
+            continue
+
+        feed.add_item(title=u'Status Meeting: {}'.format(meeting_date),
+                      link=url,
+                      # Convert the Wikicode to HTML.
+                      description=composer.stream.getvalue(),
+                      pubdate=datetime(*meeting_date.timetuple()[:3]))
 
         # Include 10 articles.
         article_count += 1
