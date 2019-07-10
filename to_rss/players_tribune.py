@@ -1,0 +1,56 @@
+from bs4 import BeautifulSoup
+
+import feedgenerator
+
+import requests
+
+BASE_URL = 'https://www.theplayerstribune.com'
+
+VALID_SPORTS = {
+    'soccer': 'Soccer',
+    'basketball': 'Basketball',
+    'hockey': 'Hockey',
+    'baseball': 'Baseball',
+    'football': 'Football',
+    'more': 'More Sports',
+}
+
+
+def sports_news(sport):
+    # Get the HTML page.
+    page_url = BASE_URL + '/global/sports/' + sport
+    response = requests.get(page_url)
+
+    # Process the HTML using BeautifulSoup!
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Get the human name.
+    name = VALID_SPORTS[sport]
+
+    feed = feedgenerator.Rss201rev2Feed(name, page_url, name)
+
+    # Iterate over each article.
+    for article in soup.find_all('article'):
+        # Get the author element, and pull out the name (and maybe a link).
+        authors = article.find_all(class_='LinkedNamesList__Contributor-s2cqwbk-0')
+        # There's one or more authors. If there are multiple, don't provide a link.
+        if len(authors) > 1:
+            author_name = ', '.join(a.contents[0] for a in authors)
+            author_link = None
+        else:
+            author_name = str(authors[0].contents[0])
+            author_link = BASE_URL + authors[0]['href']
+
+        # Get the article title (and URL).
+        title = article.find(class_='StoryCard__Headline-fps1bz-4')
+
+        # Get the brief description.
+        excerpt = article.find(class_='StoryCard__Excerpt-fps1bz-5')
+
+        feed.add_item(title=str(title.contents[0]),
+                      link=BASE_URL + title['href'],
+                      description=str(excerpt.contents[0]),
+                      author_name=author_name,
+                      author_link=author_link)
+
+    return feed.writeString('utf-8')

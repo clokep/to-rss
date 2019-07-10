@@ -16,6 +16,7 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts
+from to_rss.players_tribune import sports_news, VALID_SPORTS
 from to_rss.pottermore import pottermore_page
 from to_rss.thunderbird import thunderbird_status_meetings
 from to_rss.wikipedia import get_articles
@@ -113,6 +114,14 @@ def serve_thunderbird():
 @app.route('/thunderbird/status-meetings/')
 def serve_thunderbird_status_meetings():
     return Response(thunderbird_status_meetings(), mimetype='application/rss+xml')
+
+
+@app.route('/players_tribune/<sport>/')
+def serve_players_tribune_sport(sport):
+    if sport not in VALID_SPORTS:
+        abort(404)
+
+    return Response(sports_news(sport), mimetype='application/rss+xml')
 
 
 if __name__ == "__main__":
