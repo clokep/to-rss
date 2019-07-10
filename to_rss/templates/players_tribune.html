@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h2><i>The Players' Tribune</i></h2>
+
+<p class="lead">
+  <a href="https://www.theplayerstribune.com" target="_blank"><i>The Players' Tribune</i></a>
+  provides a platform for athletes to write articles in their own words.
+</p>
+
+<p class="lead">
+  A feed is provided for a few different sports:
+  <ul>
+    {% for sport, name in sports|dictsort(false, 'value') %}
+    <li><a href="/players_tribune/{{ sport }}/">{{ name }}</a></li>
+    {% endfor %}
+  </ul>
+</p>
+{% endblock %}

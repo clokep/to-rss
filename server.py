@@ -116,6 +116,13 @@ def serve_thunderbird_status_meetings():
     return Response(thunderbird_status_meetings(), mimetype='application/rss+xml')
 
 
+# The Players Tribune endpoints.
+@app.route('/players_tribune/')
+def serve_players_tribune():
+    template = env.get_template('players_tribune.html')
+    return template.render(sports=VALID_SPORTS)
+
+
 @app.route('/players_tribune/<sport>/')
 def serve_players_tribune_sport(sport):
     if sport not in VALID_SPORTS:
