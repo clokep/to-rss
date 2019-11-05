@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup
 
 import feedgenerator
@@ -6,12 +8,12 @@ import iso8601
 
 import requests
 
-API_URL = 'https://api.patreon.com/stream'
 PATREON_URL = 'https://www.patreon.com/{}'
+API_POSTS_URL = 'https://www.patreon.com/api/posts'
 
 
-def get_patreon_posts(user_id):
-    """Gets a list of a user's posts."""
+def get_patreon_posts(campaign_id):
+    """Gets a list of a campaign's posts."""
     # Fields to include in the response.
     fields = {
         'post': [
@@ -62,10 +64,9 @@ def get_patreon_posts(user_id):
 
     # Additional fields to filter the user.
     filters = {
-        'is_by_creator': 'true',
-        'is_following': 'false',
-        'creator_id': user_id,
+        'campaign_id': campaign_id,
         'contains_exclusive_posts': 'true',
+        'is_draft': 'false',
     }
 
     params = {'fields[' + field_type + ']': ','.join(values) for field_type, values in fields.items()}
@@ -73,20 +74,22 @@ def get_patreon_posts(user_id):
     params.update({
         'filter[' + filter_type + ']': value for filter_type, value in filters.items()
     })
-    params['page[cursor]'] = 'null'
+    params['page[size]'] = '10'
+    params['sort'] = '-published_at'
+    params['json-api-use-default-includes'] = 'true'
 
     # Some default properties.
     params['json-api-version'] = '1.0'
 
     # Get the JSON API response.
-    response = requests.get(API_URL, params=params)
+    response = requests.get(API_POSTS_URL, params=params)
     response.raise_for_status()
 
     return response.json()
 
 
-def get_user_id(user):
-    """Get the user ID from a user name."""
+def get_campaign_data(user):
+    """Get the campaign data from a user name."""
     response = requests.get(PATREON_URL.format(user))
     response.raise_for_status()
 
@@ -94,29 +97,31 @@ def get_user_id(user):
     soup = BeautifulSoup(response.content, 'html.parser')
 
     # Get the creator ID from the JavaScript.
-    script = soup.find_all('script')[3]
-    parts = script.string.split('\n')
-    for part in parts:
-        part = part.strip()
-        if part.startswith('"creator_id"'):
-            return part.lstrip('"creator_id":').rstrip(',').strip()
+    data = soup.find('body').script.string
+
+    # Find the first Object.assign, then find the first {, followed by the next ).
+    start = data.find('{', data.find("Object.assign"))
+    # This seems a little fragile.
+    end = data.find('});', start)
+
+    return json.loads(data[start:end + 1])
 
 
 def patreon_posts(user):
-    user_id = get_user_id(user)
-    data = get_patreon_posts(user_id)
+    data = get_campaign_data(user)
 
     # Get a description.
     try:
-        included = data['included']
+        campaign = data['campaign']
+        included = campaign['included']
     except KeyError:
         description = '{} on Patreon'.format(user)
         users = {}
         tags = {}
     else:
-        # Use the 1st campaign description as the feed description.
-        campaigns = [d for d in included if d['type'] == 'campaign']
-        description = campaigns[0]['attributes']['summary']
+        # Use the campaign description as the feed description.
+        description = campaign['data']['attributes']['summary']
+        campaign_id = campaign['data']['id']
 
         # Get the users associated with this Patreon.
         users = {u['id']: u for u in included if u['type'] == 'user'}
@@ -124,13 +129,17 @@ def patreon_posts(user):
         # Get the custom tags.
         tags = {t['id']: t for t in included if t['type'] == 'post_tag'}
 
+        # To be stable, use the minimum user ID.
+        users = {u['id']: u for u in included if u['type'] == 'user'}
+
     feed = feedgenerator.Rss201rev2Feed(
         title=user,
         link=PATREON_URL.format(user),
         description=description)
 
     # Iterate over each article.
-    for post in data['data']:
+    posts = get_patreon_posts(campaign_id)
+    for post in posts['data']:
         try:
             # If the content is available, use it.
             content = post['attributes']['content']
@@ -156,7 +165,7 @@ def patreon_posts(user):
         try:
             author_id = post['relationships']['user']['data']['id']
             author_name = users[author_id]['attributes']['full_name']
-            author_link = users[author_id]['attributes']['url']
+            author_link = users[author_id]['attributes'].get('url', None)
         except KeyError:
             author_name = None
             author_link = None
