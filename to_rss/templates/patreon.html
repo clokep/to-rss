@@ -30,10 +30,11 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
-$(document).ready(function () {
-  $("#patreonFormSubmit").click(function(){
-    $("#patreonForm").attr('action', window.location + $('#patreonUsername').val() + '/');
-  });
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById("patreonFormSubmit").onclick = function() {
+    document.getElementById("patreonForm").action =
+      window.location + document.getElementById('patreonUsername').value + '/';
+  };
 });
 </script>
 {% endblock %}
