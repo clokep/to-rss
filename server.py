@@ -36,6 +36,25 @@ if sentry_dsn:
     sentry_sdk.init(dsn=sentry_dsn, integrations=[FlaskIntegration()])
 
 
+# Use a custom response class to set security headers.
+class ToRssResponse(Response):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # See https://flask.palletsprojects.com/en/1.1.x/security/#security-headers
+        allowed_sources = [
+            "'self'",
+            "'unsafe-inline'",
+            'https://stackpath.bootstrapcdn.com',
+        ]
+        self.headers['Content-Security-Policy'] = "default-src " + ' '.join(allowed_sources)
+        self.headers['X-Content-Type-Options'] = 'nosniff'
+        self.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        self.headers['X-XSS-Protection'] = '1; mode=block'
+
+app.response_class = ToRssResponse
+
+
 @app.route('/')
 def serve_about():
     """A link to each endpoint that's supported."""
