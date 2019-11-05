@@ -116,12 +116,22 @@ def serve_pottermore():
 
 @app.route('/pottermore/news/')
 def serve_pottermore_news():
-    return Response(pottermore_page('news', 'Pottermore News'), mimetype='application/rss+xml')
+    return Response(pottermore_page(
+        'news',
+        'news',
+        'Pottermore News',
+        'Get the latest Wizarding World news here. Faster than an owl and more accurate than the Daily Prophet'
+    ), mimetype='application/rss+xml')
 
 
 @app.route('/pottermore/features/')
 def serve_pottermore_features():
-    return Response(pottermore_page('features', 'Pottermore Features'), mimetype='application/rss+xml')
+    return Response(pottermore_page(
+        'feature',
+        'features',
+        'Pottermore Features',
+        'For beginners, for novices, for Harry Potter superfans going 20 years-strong, dig deep into the Wizarding World with our collection of features'  # noqa E501
+    ), mimetype='application/rss+xml')
 
 
 # Thunderbird endpoints.
