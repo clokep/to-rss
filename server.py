@@ -52,6 +52,7 @@ class ToRssResponse(Response):
         self.headers['X-Frame-Options'] = 'SAMEORIGIN'
         self.headers['X-XSS-Protection'] = '1; mode=block'
 
+
 app.response_class = ToRssResponse
 
 
