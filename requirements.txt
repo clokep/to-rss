@@ -7,7 +7,7 @@ beautifulsoup4==4.8.1
 iso8601==0.1.12
 
 # For generating RSS.
-feedgenerator==1.9
+feedgenerator==1.9.1
 
 # For downloading articles from Wikipedia.
 requests==2.22.0
