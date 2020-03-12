@@ -31,8 +31,13 @@ def sports_news(sport):
 
     # Iterate over each article.
     for article in soup.find_all('article'):
+        children = list(article.children)
+
+        # Most of the info we need is in the 3rd element.
+        elements = list(children[2].children)
+
         # Get the author element, and pull out the name (and maybe a link).
-        authors = article.find_all(class_='LinkedNamesList__Contributor-s2cqwbk-0')
+        authors = list(elements[0].find_all('a'))
         # There's one or more authors. If there are multiple, don't provide a link.
         if len(authors) > 1:
             author_name = ', '.join(a.contents[0] for a in authors)
@@ -42,10 +47,10 @@ def sports_news(sport):
             author_link = BASE_URL + authors[0]['href']
 
         # Get the article title (and URL).
-        title = article.find(class_='StoryCard__Headline-fps1bz-4')
+        title = elements[1]
 
         # Get the brief description.
-        excerpt = article.find(class_='StoryCard__Excerpt-fps1bz-5')
+        excerpt = elements[2]
 
         feed.add_item(title=str(title.contents[0]),
                       link=BASE_URL + title['href'],
