@@ -58,7 +58,7 @@ def _get_news(name, page_url):
     feed = feedgenerator.Rss201rev2Feed(name, page_url, name)
 
     # Iterate over each article.
-    for article in soup.find_all('article'):
+    for article in soup.find_all('article', class_='article-item'):
         # Get the author element, and pull out the name (and maybe a link).
         author = article.find_all(class_='article-item__contributor')[0]
         author_name = author.contents[0].strip().lstrip('by').strip()
