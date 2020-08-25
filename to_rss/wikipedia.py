@@ -8,6 +8,7 @@ import mwparserfromhell
 
 import requests
 
+BASE_URL = 'https://en.wikipedia.org/wiki/'
 
 def get_current_events_by_date(lookup_date):
     # Format the date as a string, this is formatted using the #time extension
@@ -17,10 +18,6 @@ def get_current_events_by_date(lookup_date):
     # padded, but the month as a string.
     datestr = '{} {} {}'.format(lookup_date.year, lookup_date.strftime('%B'), lookup_date.day)
     return 'Portal:Current_events/' + datestr
-
-
-def get_article_url(name):
-    return 'https://en.wikipedia.org/wiki/' + name
 
 
 def get_article(url):
@@ -38,8 +35,9 @@ def get_articles():
     https://en.wikipedia.org/wiki/Portal:Current_events/Inclusion
     which then includes the past seven days.
     """
+    resolver = mwcomposerfromhell.ArticleResolver(base_url='https://en.wikipedia.org/wiki/')
     feed = feedgenerator.Rss201rev2Feed('Wikipedia: Portal: Current events',
-                                        'https://en.wikipedia.org/wiki/Portal:Current_events',
+                                        resolver.get_article_url(resolver.resolve_article('Portal:Current_events', '')),
                                         'Wikipedia: Portal: Current events')
 
     # Start at today.
@@ -48,8 +46,11 @@ def get_articles():
     for i in range(7):
         day -= timedelta(days=1)
 
+        # Create a composer.
+        composer = mwcomposerfromhell.WikicodeToHtmlComposer(resolver=resolver)
+
         # Download the article content.
-        url = get_article_url(get_current_events_by_date(day))
+        url = resolver.get_article_url(resolver.resolve_article(get_current_events_by_date(day), ''))
         article = get_article(url)
         # Parse the article contents.
         wikicode = mwparserfromhell.parse(article)
@@ -60,13 +61,17 @@ def get_articles():
                 content = template.get('content').value
 
                 try:
-                    feed.add_item(title=u'Current events: {}'.format(day),
-                                  link=url,
-                                  # Convert the Wikicode to HTML.
-                                  description=mwcomposerfromhell.compose(content),
-                                  pubdate=datetime(*day.timetuple()[:3]))
+                    # Convert the Wikicode to HTML.
+                    result = composer.compose(content)
                 except mwcomposerfromhell.HtmlComposingError:
                     print("Unable to render article from: {}".format(day))
+                    continue
+
+                # Add the results to the RSS feed.
+                feed.add_item(title=u'Current events: {}'.format(day),
+                              link=url,
+                              description=result,
+                              pubdate=datetime(*day.timetuple()[:3]))
 
                 # Stop processing this article.
                 break
