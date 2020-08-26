@@ -10,6 +10,7 @@ import requests
 
 BASE_URL = 'https://en.wikipedia.org/wiki/'
 
+
 def get_current_events_by_date(lookup_date):
     # Format the date as a string, this is formatted using the #time extension
     # to Wiki syntax:
