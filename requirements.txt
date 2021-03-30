@@ -18,7 +18,7 @@ Flask==1.1.2
 blinker==1.4
 
 # For deploying.
-gunicorn==20.0.4
+gunicorn==20.1.0
 
 # For loading configuration.
 python-dotenv==0.16.0
