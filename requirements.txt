@@ -6,6 +6,9 @@ mwcomposerfromhell==0.4
 beautifulsoup4==4.9.3
 iso8601==0.1.14
 
+# For Patreon.
+selenium==3.141.0
+
 # For generating RSS.
 feedgenerator==1.9.1
 
