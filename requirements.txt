@@ -13,7 +13,7 @@ feedgenerator==1.9.1
 requests==2.25.1
 
 # For serving the resulting feed.
-Flask==1.1.2
+Flask==2.0.0
 # For signals in Flask.
 blinker==1.4
 
