@@ -1,5 +1,5 @@
 # For parsing articles from Wikipedia and converting them to HTML.
-mwparserfromhell==0.6
+mwparserfromhell==0.6.2
 mwcomposerfromhell==0.4
 
 # For parsing the NHL and Patreon sites.
