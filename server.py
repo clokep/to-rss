@@ -46,6 +46,7 @@ class ToRssResponse(Response):
             "'self'",
             "'unsafe-inline'",
             'https://stackpath.bootstrapcdn.com',
+            'https://plausible.io',
         ]
         self.headers['Content-Security-Policy'] = "default-src " + ' '.join(allowed_sources)
         self.headers['X-Content-Type-Options'] = 'nosniff'
