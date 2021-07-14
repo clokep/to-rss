@@ -13,7 +13,7 @@ selenium==3.141.0
 feedgenerator==1.9.1
 
 # For downloading articles from Wikipedia.
-requests==2.25.1
+requests==2.26.0
 
 # For serving the resulting feed.
 Flask==1.1.2
