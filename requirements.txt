@@ -10,7 +10,7 @@ iso8601==0.1.16
 selenium==3.141.0
 
 # For generating RSS.
-feedgenerator==1.9.2
+feedgenerator==2.0.0
 
 # For downloading articles from Wikipedia.
 requests==2.26.0
