@@ -11,10 +11,8 @@ session = CachedSession(
     backend="filesystem",
     use_cache_dir=use_cache_dir,
     serializer="json",
-    # Expire after 15 minutes if no Cache-Control header.
+    # Expire after 15 minutes.
     expire_after=timedelta(minutes=15),
-    # Use Cache-Control headers, if available.
-    cache_control=True,
     # Return old content if a failure occurs.
     stale_if_error=True,
 )
