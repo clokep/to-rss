@@ -33,7 +33,7 @@ env = Environment(loader=FileSystemLoader(path.join(root, 'to_rss', 'templates')
 # Configure Sentry (if credentials are available).
 sentry_dsn = os.getenv('SENTRY_DSN')
 if sentry_dsn:
-    sentry_sdk.init(dsn=sentry_dsn, integrations=[FlaskIntegration()])
+    sentry_sdk.init(dsn=sentry_dsn, integrations=[FlaskIntegration()], traces_sample_rate=0.5)
 
 
 # Use a custom response class to set security headers.
