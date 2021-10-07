@@ -6,7 +6,7 @@ import mwcomposerfromhell
 
 import mwparserfromhell
 
-import requests
+from to_rss import session
 
 BASE_URL = 'https://en.wikipedia.org/wiki/'
 
@@ -23,7 +23,7 @@ def get_current_events_by_date(lookup_date):
 
 def get_article(url):
     """Fetches and returns the article content as a string."""
-    response = requests.get(url, params={'action': 'raw'})
+    response = session.get(url, params={'action': 'raw'})
     return response.text
 
 

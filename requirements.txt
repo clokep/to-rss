@@ -12,8 +12,9 @@ selenium==3.141.0
 # For generating RSS.
 feedgenerator==2.0.0
 
-# For downloading articles from Wikipedia.
+# For downloading articles.
 requests==2.26.0
+requests_cache==0.8.1
 
 # For serving the resulting feed.
 Flask==1.1.2

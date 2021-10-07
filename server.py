@@ -7,6 +7,9 @@ from os import path
 
 from dotenv import load_dotenv
 
+# Load .env from the same directory as this file.
+load_dotenv(path.join(path.dirname(__file__), '.env'))
+
 from flask import abort, Flask, Response
 
 from jinja2 import Environment, FileSystemLoader
@@ -26,9 +29,6 @@ app = Flask(__name__)
 # Jinja2 environment.
 root = path.dirname(path.abspath(__file__))
 env = Environment(loader=FileSystemLoader(path.join(root, 'to_rss', 'templates')))
-
-# Load .env from the same directory as this file.
-load_dotenv(path.join(path.dirname(__file__), '.env'))
 
 # Configure Sentry (if credentials are available).
 sentry_dsn = os.getenv('SENTRY_DSN')
