@@ -6,6 +6,8 @@ import mwcomposerfromhell
 
 import mwparserfromhell
 
+from sentry_sdk import start_transaction
+
 from to_rss import session
 
 BASE_URL = 'https://en.wikipedia.org/wiki/'
@@ -54,28 +56,30 @@ def get_articles():
         url = resolver.get_article_url(resolver.resolve_article(get_current_events_by_date(day), ''))
         article = get_article(url)
         # Parse the article contents.
-        wikicode = mwparserfromhell.parse(article)
+        with start_transaction(op="parse-wikitext", name="parse_current_events"):
+            wikicode = mwparserfromhell.parse(article)
 
-        # Current event pages have a top-level template.
-        for template in wikicode.ifilter_templates():
-            if template.name == 'Current events':
-                content = template.get('content').value
+        with start_transaction(op="wiki-to-html", name="parse_current_events"):
+            # Current event pages have a top-level template.
+            for template in wikicode.ifilter_templates():
+                if template.name == 'Current events':
+                    content = template.get('content').value
 
-                try:
-                    # Convert the Wikicode to HTML.
-                    result = composer.compose(content)
-                except mwcomposerfromhell.HtmlComposingError:
-                    print("Unable to render article from: {}".format(day))
-                    continue
+                    try:
+                        # Convert the Wikicode to HTML.
+                        result = composer.compose(content)
+                    except mwcomposerfromhell.HtmlComposingError:
+                        print("Unable to render article from: {}".format(day))
+                        continue
 
-                # Add the results to the RSS feed.
-                feed.add_item(title=u'Current events: {}'.format(day),
-                              link=url,
-                              description=result,
-                              pubdate=datetime(*day.timetuple()[:3]))
+                    # Add the results to the RSS feed.
+                    feed.add_item(title=u'Current events: {}'.format(day),
+                                  link=url,
+                                  description=result,
+                                  pubdate=datetime(*day.timetuple()[:3]))
 
-                # Stop processing this article.
-                break
+                    # Stop processing this article.
+                    break
 
         # TODO If the template is not found, we should do something.
 
