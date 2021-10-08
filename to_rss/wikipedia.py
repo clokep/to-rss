@@ -6,7 +6,7 @@ import mwcomposerfromhell
 
 import mwparserfromhell
 
-from sentry_sdk import start_transaction
+from sentry_sdk import start_span
 
 from to_rss import session
 
@@ -56,10 +56,10 @@ def get_articles():
         url = resolver.get_article_url(resolver.resolve_article(get_current_events_by_date(day), ''))
         article = get_article(url)
         # Parse the article contents.
-        with start_transaction(op="parse-wikitext", name="parse_current_events"):
+        with start_span(op="parse-wikitext", description="Parse " + url):
             wikicode = mwparserfromhell.parse(article)
 
-        with start_transaction(op="wiki-to-html", name="parse_current_events"):
+        with start_span(op="wiki-to-html", description="Convert " + url):
             # Current event pages have a top-level template.
             for template in wikicode.ifilter_templates():
                 if template.name == 'Current events':
