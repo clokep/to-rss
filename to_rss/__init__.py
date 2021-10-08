@@ -8,7 +8,7 @@ use_cache_dir = os.getenv("USE_CACHE_DIR", "").lower() == "true"
 session = CachedSession(
     # If a cache path is given in the environment, use it.
     cache_name="to_rss_cache",
-    backend="filesystem",
+    backend="sqlite",
     use_cache_dir=use_cache_dir,
     serializer="json",
     # Expire after 15 minutes.
