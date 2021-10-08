@@ -18,7 +18,7 @@ VALID_SPORTS = {
 
 def sports_news(sport):
     # Get the HTML page.
-    page_url = BASE_URL + '/global/sports/' + sport
+    page_url = BASE_URL + '/sports/' + sport
     response = session.get(page_url)
 
     # Process the HTML using BeautifulSoup!
@@ -31,31 +31,24 @@ def sports_news(sport):
 
     # Iterate over each article.
     for article in soup.find_all('article'):
-        children = list(article.children)
+        link = article.contents[0]
 
         # Most of the info we need is in the 3rd element.
-        elements = list(children[2].children)
+        # Note that the first element is the image.
+        elements = link.contents[2].contents
 
-        # Get the author element, and pull out the name (and maybe a link).
-        authors = list(elements[0].find_all('a'))
-        # There's one or more authors. If there are multiple, don't provide a link.
-        if len(authors) > 1:
-            author_name = ', '.join(a.contents[0] for a in authors)
-            author_link = None
-        else:
-            author_name = str(authors[0].contents[0])
-            author_link = BASE_URL + authors[0]['href']
-
-        # Get the article title (and URL).
-        title = elements[1]
+        # Get the article title.
+        title = elements[0].contents[0].string
 
         # Get the brief description.
-        excerpt = elements[2]
+        excerpt = elements[0].contents[1].string
 
-        feed.add_item(title=str(title.contents[0]),
-                      link=BASE_URL + title['href'],
-                      description=str(excerpt.contents[0]),
-                      author_name=author_name,
-                      author_link=author_link)
+        # Get the author element, and pull out the name (and maybe a link).
+        authors = elements[1].string
+
+        feed.add_item(title=title,
+                      link=link['href'],
+                      description=excerpt,
+                      author_name=authors)
 
     return feed.writeString('utf-8')
