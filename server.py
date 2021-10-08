@@ -97,13 +97,13 @@ def serve_nhl_team_news(team):
 
 
 # Patreon end points.
-@app.route('/patreon/')
+#@app.route('/patreon/')
 def serve_patreon():
     template = env.get_template('patreon.html')
     return template.render()
 
 
-@app.route('/patreon/<user>/')
+#@app.route('/patreon/<user>/')
 def serve_patreon_user(user):
     return Response(patreon_posts(user), mimetype='application/rss+xml')
 
