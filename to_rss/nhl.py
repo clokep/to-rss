@@ -25,10 +25,12 @@ VALID_TEAMS = {
     'redwings': 'Detroit Red Wings',
     'panthers': 'Florida Panthers',
     'canadiens': 'Montréal Canadiens',
+    'fr-canadiens': 'Montréal Canadiens (FR)',
     'senators': 'Ottawa Senators',
     'lightning': 'Tampa Bay Lightning',
     'mapleleafs': 'Toronto Maple Leafs',
     # Central division.
+    'coyotes': 'Arizona Coyotes',
     'blackhawks': 'Chicago Blackhawks',
     'avalanche': 'Colorado Avalanche',
     'stars': 'Dallas Stars',
@@ -38,11 +40,11 @@ VALID_TEAMS = {
     'jets': 'Winnipeg Jets',
     # Pacific division.
     'ducks': 'Anaheim Ducks',
-    'coyotes': 'Arizona Coyotes',
     'flames': 'Calgary Flames',
     'oilers': 'Edmonton Oilers',
     'kings': 'Las Angeles Kings',
     'sharks': 'San Jose Sharks',
+    'kraken': 'Seattle Kraken',
     'canucks': 'Vancouver Canucks',
     'goldenknights': 'Vegas Golden Knights',
 }
@@ -90,5 +92,10 @@ def nhl_news():
 
 
 def team_news(team):
+    if team == 'fr-canadiens':
+        url = 'fr/canadiens'
+    else:
+        url = team
+
     return _get_news('{} News'.format(VALID_TEAMS[team]),
-                     '{}/{}/news/'.format(BASE_URL, team))
+                     '{}/{}/news/'.format(BASE_URL, url))
