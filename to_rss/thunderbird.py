@@ -80,12 +80,12 @@ def thunderbird_status_meetings():
             # Convert the Wikicode to HTML.
             result = composer.compose(wikicode)
         except mwcomposerfromhell.HtmlComposingError:
-            print("Unable to render status meeting notes from: {}".format(meeting_date))
+            print(f"Unable to render status meeting notes from: {meeting_date}")
             continue
 
         # Add the results to the RSS feed.
         feed.add_item(
-            title=u"Status Meeting: {}".format(meeting_date),
+            title=f"Status Meeting: {meeting_date}",
             link=url,
             description=result,
             pubdate=datetime(*meeting_date.timetuple()[:3]),

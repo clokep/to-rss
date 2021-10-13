@@ -90,7 +90,7 @@ def _get_news(name, page_url):
 
 
 def nhl_news():
-    return _get_news("NHL Headlines", "{}/news/".format(BASE_URL))
+    return _get_news("NHL Headlines", f"{BASE_URL}/news/")
 
 
 def team_news(team):
@@ -99,6 +99,4 @@ def team_news(team):
     else:
         url = team
 
-    return _get_news(
-        "{} News".format(VALID_TEAMS[team]), "{}/{}/news/".format(BASE_URL, url)
-    )
+    return _get_news(f"{VALID_TEAMS[team]} News", f"{BASE_URL}/{url}/news/")

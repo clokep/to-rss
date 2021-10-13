@@ -19,9 +19,7 @@ def get_current_events_by_date(lookup_date):
     # https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#.23time with
     # a format of "Y F j". This is awkward because we want the day *not* zero
     # padded, but the month as a string.
-    datestr = "{} {} {}".format(
-        lookup_date.year, lookup_date.strftime("%B"), lookup_date.day
-    )
+    datestr = f"{lookup_date.year} {lookup_date.strftime('%B')} {lookup_date.day}"
     return "Portal:Current_events/" + datestr
 
 
@@ -77,12 +75,12 @@ def get_articles():
                         # Convert the Wikicode to HTML.
                         result = composer.compose(content)
                     except mwcomposerfromhell.HtmlComposingError:
-                        print("Unable to render article from: {}".format(day))
+                        print(f"Unable to render article from: {day}")
                         continue
 
                     # Add the results to the RSS feed.
                     feed.add_item(
-                        title=u"Current events: {}".format(day),
+                        title=f"Current events: {day}",
                         link=url,
                         description=result,
                         pubdate=datetime(*day.timetuple()[:3]),
