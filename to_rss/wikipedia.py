@@ -10,7 +10,7 @@ from sentry_sdk import start_span
 
 from to_rss import session
 
-BASE_URL = 'https://en.wikipedia.org/wiki/'
+BASE_URL = "https://en.wikipedia.org/wiki/"
 
 
 def get_current_events_by_date(lookup_date):
@@ -19,13 +19,15 @@ def get_current_events_by_date(lookup_date):
     # https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#.23time with
     # a format of "Y F j". This is awkward because we want the day *not* zero
     # padded, but the month as a string.
-    datestr = '{} {} {}'.format(lookup_date.year, lookup_date.strftime('%B'), lookup_date.day)
-    return 'Portal:Current_events/' + datestr
+    datestr = "{} {} {}".format(
+        lookup_date.year, lookup_date.strftime("%B"), lookup_date.day
+    )
+    return "Portal:Current_events/" + datestr
 
 
 def get_article(url):
     """Fetches and returns the article content as a string."""
-    response = session.get(url, params={'action': 'raw'})
+    response = session.get(url, params={"action": "raw"})
     return response.text
 
 
@@ -38,10 +40,14 @@ def get_articles():
     https://en.wikipedia.org/wiki/Portal:Current_events/Inclusion
     which then includes the past seven days.
     """
-    resolver = mwcomposerfromhell.ArticleResolver(base_url='https://en.wikipedia.org/wiki/')
-    feed = feedgenerator.Rss201rev2Feed('Wikipedia: Portal: Current events',
-                                        resolver.get_article_url(resolver.resolve_article('Portal:Current_events', '')),
-                                        'Wikipedia: Portal: Current events')
+    resolver = mwcomposerfromhell.ArticleResolver(
+        base_url="https://en.wikipedia.org/wiki/"
+    )
+    feed = feedgenerator.Rss201rev2Feed(
+        "Wikipedia: Portal: Current events",
+        resolver.get_article_url(resolver.resolve_article("Portal:Current_events", "")),
+        "Wikipedia: Portal: Current events",
+    )
 
     # Start at today.
     day = date.today()
@@ -53,7 +59,9 @@ def get_articles():
         composer = mwcomposerfromhell.WikicodeToHtmlComposer(resolver=resolver)
 
         # Download the article content.
-        url = resolver.get_article_url(resolver.resolve_article(get_current_events_by_date(day), ''))
+        url = resolver.get_article_url(
+            resolver.resolve_article(get_current_events_by_date(day), "")
+        )
         article = get_article(url)
         # Parse the article contents.
         with start_span(op="parse-wikitext", description="Parse " + url):
@@ -62,8 +70,8 @@ def get_articles():
         with start_span(op="wiki-to-html", description="Convert " + url):
             # Current event pages have a top-level template.
             for template in wikicode.ifilter_templates():
-                if template.name == 'Current events':
-                    content = template.get('content').value
+                if template.name == "Current events":
+                    content = template.get("content").value
 
                     try:
                         # Convert the Wikicode to HTML.
@@ -73,14 +81,16 @@ def get_articles():
                         continue
 
                     # Add the results to the RSS feed.
-                    feed.add_item(title=u'Current events: {}'.format(day),
-                                  link=url,
-                                  description=result,
-                                  pubdate=datetime(*day.timetuple()[:3]))
+                    feed.add_item(
+                        title=u"Current events: {}".format(day),
+                        link=url,
+                        description=result,
+                        pubdate=datetime(*day.timetuple()[:3]),
+                    )
 
                     # Stop processing this article.
                     break
 
         # TODO If the template is not found, we should do something.
 
-    return feed.writeString('utf-8')
+    return feed.writeString("utf-8")

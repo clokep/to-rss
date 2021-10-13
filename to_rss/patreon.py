@@ -11,14 +11,16 @@ from selenium import webdriver
 if "Apple" not in environ.get("TERM_PROGRAM", ""):
     from pyvirtualdisplay import Display
 else:
+
     @contextmanager
     def Display():
         yield
 
-PATREON_URL = 'https://www.patreon.com/{}'
+
+PATREON_URL = "https://www.patreon.com/{}"
 
 
-def get_first_child(element, tag='div'):
+def get_first_child(element, tag="div"):
     return element.find_elements_by_tag_name(tag)[0]
 
 
@@ -33,33 +35,43 @@ def patreon_posts(user):
         try:
             driver.get(patreon_user_url)
 
-            element = driver.find_element_by_tag_name('h1')
+            element = driver.find_element_by_tag_name("h1")
             feed_title = element.text
             # Find a h1, followed by a span.
-            feed_description = feed_title + ' ' + driver.find_element_by_xpath(
-                "//h1/following-sibling::span").text
+            feed_description = (
+                feed_title
+                + " "
+                + driver.find_element_by_xpath("//h1/following-sibling::span").text
+            )
 
             feed = feedgenerator.Rss201rev2Feed(
-                title=feed_title,
-                link=patreon_user_url,
-                description=feed_description)
+                title=feed_title, link=patreon_user_url, description=feed_description
+            )
 
             posts = driver.find_elements_by_css_selector('div[data-tag="post-card"]')
 
             for post in posts:
                 print(post)
-                element = post.find_element_by_css_selector('a[data-tag="post-published-at"')
+                element = post.find_element_by_css_selector(
+                    'a[data-tag="post-published-at"'
+                )
                 link = element.get_attribute("href")
                 date = datetime.strptime(element.text, "%b %d, %Y AT %I:%M %p")
 
-                title = post.find_element_by_css_selector('span[data-tag="post-title"]').text
+                title = post.find_element_by_css_selector(
+                    'span[data-tag="post-title"]'
+                ).text
                 try:
-                    container = post.find_element_by_css_selector('div[data-tag="post-content-collapse"]')
-                    description_el = get_first_child(get_first_child(get_first_child(get_first_child(container))))
-                    description = description_el.get_attribute('innerHTML')
+                    container = post.find_element_by_css_selector(
+                        'div[data-tag="post-content-collapse"]'
+                    )
+                    description_el = get_first_child(
+                        get_first_child(get_first_child(get_first_child(container)))
+                    )
+                    description = description_el.get_attribute("innerHTML")
                 except selenium.common.exceptions.NoSuchElementException:
                     # No description.
-                    description = ''
+                    description = ""
 
                 # TODO Handle media.
 
@@ -75,4 +87,4 @@ def patreon_posts(user):
         finally:
             driver.quit()
 
-    return feed.writeString('utf-8')
+    return feed.writeString("utf-8")

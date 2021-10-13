@@ -4,25 +4,25 @@ import feedgenerator
 
 from to_rss import session
 
-BASE_URL = 'https://www.theplayerstribune.com'
+BASE_URL = "https://www.theplayerstribune.com"
 
 VALID_SPORTS = {
-    'soccer': 'Soccer',
-    'basketball': 'Basketball',
-    'hockey': 'Hockey',
-    'baseball': 'Baseball',
-    'football': 'Football',
-    'more': 'More Sports',
+    "soccer": "Soccer",
+    "basketball": "Basketball",
+    "hockey": "Hockey",
+    "baseball": "Baseball",
+    "football": "Football",
+    "more": "More Sports",
 }
 
 
 def sports_news(sport):
     # Get the HTML page.
-    page_url = BASE_URL + '/sports/' + sport
+    page_url = BASE_URL + "/sports/" + sport
     response = session.get(page_url)
 
     # Process the HTML using BeautifulSoup!
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, "html.parser")
 
     # Get the human name.
     name = VALID_SPORTS[sport]
@@ -30,7 +30,7 @@ def sports_news(sport):
     feed = feedgenerator.Rss201rev2Feed(name, page_url, name)
 
     # Iterate over each article.
-    for article in soup.find_all('article'):
+    for article in soup.find_all("article"):
         link = article.contents[0]
 
         # Most of the info we need is in the 3rd element.
@@ -46,9 +46,8 @@ def sports_news(sport):
         # Get the author element, and pull out the name (and maybe a link).
         authors = elements[1].string
 
-        feed.add_item(title=title,
-                      link=link['href'],
-                      description=excerpt,
-                      author_name=authors)
+        feed.add_item(
+            title=title, link=link["href"], description=excerpt, author_name=authors
+        )
 
-    return feed.writeString('utf-8')
+    return feed.writeString("utf-8")
