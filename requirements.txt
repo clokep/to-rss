@@ -7,7 +7,7 @@ beautifulsoup4==4.10.0
 iso8601==0.1.16
 
 # For Patreon.
-selenium==3.141.0
+selenium==4.0.0
 
 # For generating RSS.
 feedgenerator==2.0.0
