@@ -9,6 +9,23 @@ from to_rss import session
 STATUS_MEETINGS_DOC = "https://docs.google.com/document/d/e/2PACX-1vTWWRaJg6vfM73FWPZtJHv0uQJHnYbVM35cxmGaW1HHtsdvXkdASU0K5NpaW4Vhva0A5OHFOTpSRe3u/pub"
 
 
+def _clean_html(element) -> None:
+    """
+    Cleans a Tag to simplify the resulting HTML.
+    """
+    # If a string is found, nothing to do.
+    if element.name is None:
+        return
+
+    # Remove attributes related to stylesheets which are unused.
+    element.attrs.pop("id", None)
+    element.attrs.pop("class", None)
+
+    # And clean any children.
+    for child in element.children:
+        _clean_html(child)
+
+
 def thunderbird_status_meetings():
     """Return an RSS feed of Thunderbird Status Meetings."""
     response = session.get(STATUS_MEETINGS_DOC)
@@ -44,6 +61,8 @@ def thunderbird_status_meetings():
             if not current.string:
                 continue
 
+            # Clean-up the HTML a bit.
+            _clean_html(current)
             result += str(current)
 
         # Add the results to the RSS feed.
