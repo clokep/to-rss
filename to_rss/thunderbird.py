@@ -122,7 +122,7 @@ def thunderbird_status_meetings():
 
         # Add the results to the RSS feed.
         feed.add_item(
-            title=f"Status Meeting: {meeting_date}",
+            title=f"Status Meeting: {header.string}",
             link=STATUS_MEETINGS_DOC + "#" + header["id"],
             description=str(section),
             pubdate=meeting_date,
