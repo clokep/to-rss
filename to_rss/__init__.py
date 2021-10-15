@@ -19,6 +19,7 @@ def get_session():
             serializer="pickle",
             # Expire after 15 minutes.
             expire_after=timedelta(minutes=15),
+            allowable_methods=("GET", "HEAD", "POST"),
             # Return old content if a failure occurs.
             stale_if_error=True,
         )

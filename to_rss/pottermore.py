@@ -4,7 +4,7 @@ import feedgenerator
 
 import iso8601
 
-import requests
+from to_rss import get_session
 
 BASE_URL = "https://www.wizardingworld.com"
 API_URL = "https://api.wizardingworld.com/v3"
@@ -22,7 +22,7 @@ def get_items(tag):
         "query": "query ContentQuery($contentTypes: [String!], $count: Int, $offset: Int, $tags: [String!], $excludeTags: [String!], $externalId: String) {\n  content(contentTypes: $contentTypes, count: $count, offset: $offset, tags: $tags, excludeTags: $excludeTags, externalId: $externalId) {\n    results {\n      id\n      body\n      contentTypeId\n      __typename\n    }\n    __typename\n  }\n}\n",  # noqa: E501
     }
 
-    response = requests.post(
+    response = get_session().post(
         API_URL,
         json=body,
         headers={
