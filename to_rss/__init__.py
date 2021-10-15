@@ -13,7 +13,7 @@ def get_session():
     if session is None:
         session = g._session = session = CachedSession(
             # If a cache path is given in the environment, use it.
-            cache_name="to_rss_cache",
+            cache_name="to_rss_requests",
             backend="sqlite",
             use_cache_dir=use_cache_dir,
             serializer="pickle",

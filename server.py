@@ -12,11 +12,16 @@ load_dotenv(path.join(path.dirname(__file__), ".env"))
 
 from flask import abort, Flask, Response
 
+from flask_caching import Cache
+
 from jinja2 import Environment, FileSystemLoader
+
+from requests_cache.backends.sqlite import get_cache_path
 
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 
+from to_rss import use_cache_dir
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts
 from to_rss.players_tribune import sports_news, VALID_SPORTS
@@ -24,7 +29,17 @@ from to_rss.pottermore import pottermore_page
 from to_rss.thunderbird import thunderbird_status_meetings
 from to_rss.wikipedia import get_articles
 
+# Configure a file system cache to store responses for 5 minutes. With the
+# requests cache we might return data that's ~20 minutes old.
+config = {
+    "CACHE_TYPE": "FileSystemCache",
+    "CACHE_DIR": get_cache_path("to_rss_responses", use_cache_dir=use_cache_dir),
+    "CACHE_DEFAULT_TIMEOUT": 300,
+}
+
 app = Flask(__name__)
+app.config.from_mapping(config)
+cache = Cache(app)
 
 # Jinja2 environment.
 root = path.dirname(path.abspath(__file__))
@@ -76,6 +91,7 @@ def serve_wikipedia():
 
 
 @app.route("/wikipedia/current_events/")
+@cache.cached()
 def serve_wikipedia_current_events():
     return Response(get_articles(), mimetype="application/rss+xml")
 
@@ -88,11 +104,13 @@ def serve_nhl():
 
 
 @app.route("/nhl/news/")
+@cache.cached()
 def serve_nhl_news():
     return Response(nhl_news(), mimetype="application/rss+xml")
 
 
 @app.route("/nhl/<team>/")
+@cache.cached()
 def serve_nhl_team_news(team):
     if team not in VALID_TEAMS:
         abort(404)
@@ -120,6 +138,7 @@ def serve_pottermore():
 
 
 @app.route("/pottermore/news/")
+@cache.cached()
 def serve_pottermore_news():
     return Response(
         pottermore_page(
@@ -133,6 +152,7 @@ def serve_pottermore_news():
 
 
 @app.route("/pottermore/features/")
+@cache.cached()
 def serve_pottermore_features():
     return Response(
         pottermore_page(
@@ -153,6 +173,7 @@ def serve_thunderbird():
 
 
 @app.route("/thunderbird/status-meetings/")
+@cache.cached()
 def serve_thunderbird_status_meetings():
     return Response(thunderbird_status_meetings(), mimetype="application/rss+xml")
 
@@ -165,6 +186,7 @@ def serve_players_tribune():
 
 
 @app.route("/players_tribune/<sport>/")
+@cache.cached()
 def serve_players_tribune_sport(sport):
     if sport not in VALID_SPORTS:
         abort(404)
