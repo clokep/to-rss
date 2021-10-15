@@ -4,6 +4,8 @@ import feedgenerator
 
 import iso8601
 
+import markdown
+
 from to_rss import get_session
 
 BASE_URL = "https://www.wizardingworld.com"
@@ -66,7 +68,7 @@ def pottermore_page(tag, url, name, description):
             title=body["displayTitle"],
             link=BASE_URL + "/" + url + "/" + body["externalId"],
             author_name=body["author"]["title"],
-            description=description,
+            description=markdown.markdown(description),
             pubdate=iso8601.parse_date(body["publishDate"]),
             unique_id=post["id"],
             categories=[t["name"] for t in body["tags"]],

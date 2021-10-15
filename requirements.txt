@@ -1,13 +1,16 @@
-# For parsing articles from Wikipedia and converting them to HTML.
+# For Wikipedia.
 mwparserfromhell==0.6.3
 mwcomposerfromhell==0.4
 
-# For parsing the NHL and Patreon sites.
+# For NHL, The Players Tribune, Thunderbird, and Patreon sites.
 beautifulsoup4==4.10.0
 iso8601==0.1.16
 
 # For Patreon.
 selenium==3.141.0
+
+# For Pottermore.
+Markdown==3.3.4
 
 # For generating RSS.
 feedgenerator==2.0.0
