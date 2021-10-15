@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 import feedgenerator
 
-from to_rss import session
+from to_rss import get_session
 
 STATUS_MEETINGS_DOC = "https://docs.google.com/document/d/e/2PACX-1vTWWRaJg6vfM73FWPZtJHv0uQJHnYbVM35cxmGaW1HHtsdvXkdASU0K5NpaW4Vhva0A5OHFOTpSRe3u/pub"
 
@@ -51,7 +51,7 @@ def _get_level(element):
 
 def thunderbird_status_meetings():
     """Return an RSS feed of Thunderbird Status Meetings."""
-    response = session.get(STATUS_MEETINGS_DOC)
+    response = get_session().get(STATUS_MEETINGS_DOC)
 
     # Process the HTML using BeautifulSoup!
     soup = BeautifulSoup(response.content, "html.parser")

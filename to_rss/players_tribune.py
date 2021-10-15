@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 
 import feedgenerator
 
-from to_rss import session
+from to_rss import get_session
 
 BASE_URL = "https://www.theplayerstribune.com"
 
@@ -19,7 +19,7 @@ VALID_SPORTS = {
 def sports_news(sport):
     # Get the HTML page.
     page_url = BASE_URL + "/sports/" + sport
-    response = session.get(page_url)
+    response = get_session().get(page_url)
 
     # Process the HTML using BeautifulSoup!
     soup = BeautifulSoup(response.content, "html.parser")

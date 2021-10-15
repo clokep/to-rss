@@ -4,7 +4,7 @@ import feedgenerator
 
 import iso8601
 
-from to_rss import session
+from to_rss import get_session
 
 BASE_URL = "https://www.nhl.com"
 
@@ -52,7 +52,7 @@ VALID_TEAMS = {
 
 def _get_news(name, page_url):
     # Get the HTML page.
-    response = session.get(page_url)
+    response = get_session().get(page_url)
 
     # Process the HTML using BeautifulSoup!
     soup = BeautifulSoup(response.content, "html.parser")

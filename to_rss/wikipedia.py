@@ -8,7 +8,7 @@ import mwparserfromhell
 
 from sentry_sdk import start_span
 
-from to_rss import session
+from to_rss import get_session
 
 BASE_URL = "https://en.wikipedia.org/wiki/"
 
@@ -25,7 +25,7 @@ def get_current_events_by_date(lookup_date):
 
 def get_article(url):
     """Fetches and returns the article content as a string."""
-    response = session.get(url, params={"action": "raw"})
+    response = get_session().get(url, params={"action": "raw"})
     return response.text
 
 
