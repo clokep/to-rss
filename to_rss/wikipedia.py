@@ -1,4 +1,5 @@
 from datetime import date, datetime, timedelta
+import logging
 
 import feedgenerator
 
@@ -9,6 +10,8 @@ import mwparserfromhell
 from sentry_sdk import start_span
 
 from to_rss import get_session
+
+logger = logging.getLogger(__name__)
 
 BASE_URL = "https://en.wikipedia.org/wiki/"
 
@@ -75,7 +78,7 @@ def get_articles():
                         # Convert the Wikicode to HTML.
                         result = composer.compose(content)
                     except mwcomposerfromhell.HtmlComposingError:
-                        print(f"Unable to render article from: {day}")
+                        logger.error("Unable to render article from: %s", day)
                         continue
 
                     # Add the results to the RSS feed.

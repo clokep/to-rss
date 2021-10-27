@@ -59,7 +59,6 @@ def pottermore_page(tag, url, name, description):
 
             elif section["contentTypeId"] == "image":
                 # Add the image on a separate line.
-                print(section)
                 image = section["image"]
                 alt = image.get("description") or image["title"]
                 description += (
