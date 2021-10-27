@@ -79,7 +79,6 @@ def pottermore_page(tag, url, name, description):
                 )
 
             else:
-                print(section)
                 logger.error(
                     "Unknown section type: %s via %s / %s",
                     section["contentTypeId"],
