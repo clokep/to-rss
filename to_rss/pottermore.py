@@ -101,9 +101,9 @@ def pottermore_page(tag, url, name, description):
             categories=[t["name"] for t in body["tags"]],
             updateddate=iso8601.parse_date(body["_updatedAt"]),
             enclosure=feedgenerator.Enclosure(
-                "https:" + main_image["url"],
-                str(main_image["details"]["size"]),
-                main_image["contentType"],
+                url="https:" + main_image["url"],
+                length=str(main_image["details"]["size"]),
+                mimtype=main_image["contentType"],
             ),
         )
 
