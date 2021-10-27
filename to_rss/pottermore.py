@@ -1,4 +1,5 @@
 import json
+import logging
 
 import feedgenerator
 
@@ -7,6 +8,8 @@ import iso8601
 import markdown
 
 from to_rss import get_session
+
+logger = logging.getLogger(__name__)
 
 BASE_URL = "https://www.wizardingworld.com"
 API_URL = "https://api.wizardingworld.com/v3"
@@ -55,11 +58,25 @@ def pottermore_page(tag, url, name, description):
                 description += section["text"]
 
             elif section["contentTypeId"] == "image":
-                # TODO Add a link to the image.
-                # Useful properties: imageAltText,
-                # section['image']['file']['details'] has height/width and size.
-                # section['image']['file']['url']
-                pass
+                # Add the image on a separate line.
+                print(section)
+                image = section["image"]
+                alt = image.get("description") or image["title"]
+                description += (
+                    f'\n\n<img src="https:{image["file"]["url"]}" alt="{alt}"></a>\n\n'
+                )
+
+            elif section["contentTypeId"] == "video":
+                # Add the preview image.
+                image = section["mainImage"]["image"]
+                alt = section["displayTitle"]
+                description += (
+                    f'\n\n<img src="https:{image["file"]["url"]}" alt="{alt}"></a>\n\n'
+                )
+
+            else:
+                logger.error("Unknown section type: %s via %s", section["contentTypeId"], url)
+
 
         # The image at the top of the page.
         main_image = body["mainImage"]["image"]["file"]

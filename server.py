@@ -32,7 +32,7 @@ from to_rss.wikipedia import get_articles
 # Configure a file system cache to store responses for 5 minutes. With the
 # requests cache we might return data that's ~20 minutes old.
 config = {
-    "CACHE_TYPE": "FileSystemCache",
+    "CACHE_TYPE": "NullCache",
     "CACHE_DIR": get_cache_path("to_rss_responses", use_cache_dir=use_cache_dir),
     "CACHE_DEFAULT_TIMEOUT": 300,
 }
