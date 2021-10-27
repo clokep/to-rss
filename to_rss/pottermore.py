@@ -73,13 +73,11 @@ def pottermore_page(tag, url, name, description):
             unique_id=post["id"],
             categories=[t["name"] for t in body["tags"]],
             updateddate=iso8601.parse_date(body["_updatedAt"]),
-            enclosures=[
-                feedgenerator.Enclosure(
-                    "https:" + main_image["url"],
-                    main_image["details"]["size"],
-                    main_image["contentType"],
-                ),
-            ],
+            enclosure=feedgenerator.Enclosure(
+                "https:" + main_image["url"],
+                str(main_image["details"]["size"]),
+                main_image["contentType"],
+            ),
         )
 
     return feed.writeString("utf-8")
