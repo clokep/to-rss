@@ -49,12 +49,12 @@ def pottermore_page(tag, url, name, description):
     data = get_items(tag)
     for post in data["data"]["content"]["results"]:
         body = json.loads(post["body"])
+        title = body["displayTitle"]
 
         # The actual text must be rebuilt from the multiple sections.
         description = body.get("intro", "")
         for section in body["section"]:
             if section["contentTypeId"] == "textSection":
-                # TODO This seems to be reStructuredText.
                 description += section["text"]
 
             elif section["contentTypeId"] == "image":
@@ -62,7 +62,7 @@ def pottermore_page(tag, url, name, description):
                 image = section["image"]
                 alt = image.get("description") or image["title"]
                 description += (
-                    f'\n\n<img src="https:{image["file"]["url"]}" alt="{alt}"></a>\n\n'
+                    f'<img src="https:{image["file"]["url"]}" alt="{alt}"></a>'
                 )
 
             elif section["contentTypeId"] == "video":
@@ -70,19 +70,30 @@ def pottermore_page(tag, url, name, description):
                 image = section["mainImage"]["image"]
                 alt = section["displayTitle"]
                 description += (
-                    f'\n\n<img src="https:{image["file"]["url"]}" alt="{alt}"></a>\n\n'
+                    f'<img src="https:{image["file"]["url"]}" alt="{alt}"></a>'
+                )
+
+            elif section["contentTypeId"] == "excerpt":
+                description += (
+                    f'**{section["excerptURLTitle"]}**\n> {section["excerptText"]}'
                 )
 
             else:
+                print(section)
                 logger.error(
-                    "Unknown section type: %s via %s", section["contentTypeId"], url
+                    "Unknown section type: %s via %s / %s",
+                    section["contentTypeId"],
+                    url,
+                    title,
                 )
+
+            description += "\n\n"
 
         # The image at the top of the page.
         main_image = body["mainImage"]["image"]["file"]
 
         feed.add_item(
-            title=body["displayTitle"],
+            title=title,
             link=BASE_URL + "/" + url + "/" + body["externalId"],
             author_name=body["author"]["title"],
             description=markdown.markdown(description),
