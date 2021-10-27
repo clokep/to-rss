@@ -74,8 +74,9 @@ def pottermore_page(tag, url, name, description):
                 )
 
             else:
-                logger.error("Unknown section type: %s via %s", section["contentTypeId"], url)
-
+                logger.error(
+                    "Unknown section type: %s via %s", section["contentTypeId"], url
+                )
 
         # The image at the top of the page.
         main_image = body["mainImage"]["image"]["file"]
