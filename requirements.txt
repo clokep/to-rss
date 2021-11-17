@@ -10,7 +10,7 @@ iso8601==1.0.0
 selenium==3.141.0
 
 # For Pottermore.
-Markdown==3.3.4
+Markdown==3.3.5
 
 # For generating RSS.
 feedgenerator==2.0.0
