@@ -2,7 +2,7 @@
 https://codeload.github.com/fabric/fabric/zip/2d89b122ed05550c0b4b1fd8836b4a31060ad2a5
 
 # Formatting.
-black==21.11b0
+black==21.11b1
 
 # Style checking.
 flake8==4.0.1
