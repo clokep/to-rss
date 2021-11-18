@@ -78,7 +78,9 @@ def _get_news(name, page_url):
         # data-url though!
 
         # Find an image from the video preview.
-        image_container = article.find_all("div", class_="article-item__img-container")[0]
+        image_container = article.find_all("div", class_="article-item__img-container")[
+            0
+        ]
         image = image_container.find_all("img")[0]
         image_url = image.get("data-src")
         if not image_url:
