@@ -7,7 +7,7 @@ beautifulsoup4==4.10.0
 iso8601==1.0.1
 
 # For Patreon.
-selenium==3.141.0
+selenium==4.1.0
 
 # For Pottermore.
 Markdown==3.3.6
