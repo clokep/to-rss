@@ -1,5 +1,5 @@
 # For Wikipedia.
-mwparserfromhell==0.6.3
+mwparserfromhell==0.6.4
 mwcomposerfromhell==0.4
 
 # For NHL, The Players Tribune, Thunderbird, and Patreon sites.
