@@ -17,7 +17,7 @@ feedgenerator==2.0.0
 
 # For downloading articles.
 requests==2.27.1
-requests_cache==0.8.1
+requests_cache==0.9.4
 
 # For serving the resulting feed.
 Flask==2.0.2
