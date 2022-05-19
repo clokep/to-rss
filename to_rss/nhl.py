@@ -78,19 +78,23 @@ def _get_news(name, page_url):
         # data-url though!
 
         # Find an image from the video preview.
-        image_container = article.find_all("div", class_="article-item__img-container")[
-            0
-        ]
-        image = image_container.find_all("img")[0]
-        image_url = image.get("data-src")
-        if not image_url:
-            image_url = image.get("data-srcset")
-            if image_url:
-                image_url = image_url.split(" ")[0]
-            else:
-                image_url = image["src"]
-        if image_url.startswith("//"):
-            image_url = "https:" + image_url
+        image_container = article.find_all("div", class_="article-item__img-container")
+        image = None
+        if len(image_container) > 0:
+            image = image_container[0].find_all("img")[0]
+            image_url = image.get("data-src")
+            if not image_url:
+                image_url = image.get("data-srcset")
+                if image_url:
+                    image_url = image_url.split(" ")[0]
+                else:
+                    image_url = image["src"]
+            if image_url.startswith("//"):
+                image_url = "https:" + image_url
+
+            image = feedgenerator.Enclosure(
+                url=image_url, length="1", mime_type="image/jpg"
+            )
 
         feed.add_item(
             title=str(article.h1.string),
@@ -99,9 +103,7 @@ def _get_news(name, page_url):
             author_name=author_name,
             author_link=author_link,
             pubdate=iso8601.parse_date(date["data-date"]),
-            enclosure=feedgenerator.Enclosure(
-                url=image_url, length="1", mime_type="image/jpg"
-            ),
+            enclosure=image,
         )
 
     return feed.writeString("utf-8")
