@@ -44,7 +44,10 @@ def sports_news(sport):
         excerpt = elements[0].contents[1].string
 
         # Get the author element, and pull out the name (and maybe a link).
-        authors = elements[1].string
+        if len(elements) > 1:
+            authors = elements[1].string
+        else:
+            authors = None
 
         feed.add_item(
             title=title, link=link["href"], description=excerpt, author_name=authors
