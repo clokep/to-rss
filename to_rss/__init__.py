@@ -51,7 +51,7 @@ def _send_analytics():
     Note that this doesn't get registered as a signal since it should only run on
     API pages.
     """
-    if REPORT_ANALYTICS:
+    if not REPORT_ANALYTICS:
         return
 
     user_agent = request.headers.get("User-Agent", "")
@@ -64,11 +64,14 @@ def _send_analytics():
         subscribers = int(match.group(1))
         user_agent = SUBSCRIBERS_REGEX.sub("N subscribers", user_agent)
 
+    # Unpack the IP address from the reverse proxy, if one is being used.
+    client_ip_address = request.headers.get("X-Real-IP") or request.remote_addr
+
     # Outgoing API data.
     headers = {
         "User-Agent": user_agent,
-        "X-Forwarded-For": request.remote_addr,
-        "Content-Type": "applicaton/json",
+        "X-Forwarded-For": client_ip_address,
+        "Content-Type": "application/json",
     }
     body = {
         "name": "pageview",
@@ -90,6 +93,7 @@ def report_page(f):
 
     Should be placed outside any caching.
     """
+
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
         _send_analytics()
