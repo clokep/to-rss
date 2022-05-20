@@ -21,7 +21,7 @@ from requests_cache.backends.sqlite import get_cache_path
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-from to_rss import use_cache_dir
+from to_rss import report_page, USE_CACHE_DIR
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts
 from to_rss.players_tribune import sports_news, VALID_SPORTS
@@ -33,10 +33,10 @@ from to_rss.wikipedia import get_articles
 # requests cache we might return data that's ~20 minutes old.
 #
 # Only enable this if specified in the configuration (i.e. don't enable in dev).
-cache_results = os.getenv("CACHE_RESULTS", "").lower() == "true"
+CACHE_RESULTS = os.getenv("CACHE_RESULTS", "").lower() == "true"
 config = {
-    "CACHE_TYPE": "FileSystemCache" if cache_results else "NullCache",
-    "CACHE_DIR": get_cache_path("to_rss_responses", use_cache_dir=use_cache_dir),
+    "CACHE_TYPE": "FileSystemCache" if CACHE_RESULTS else "NullCache",
+    "CACHE_DIR": get_cache_path("to_rss_responses", use_cache_dir=USE_CACHE_DIR),
     "CACHE_DEFAULT_TIMEOUT": 300,
 }
 
