@@ -91,8 +91,8 @@ def report_page(f):
     Should be placed outside any caching.
     """
     @functools.wraps(f)
-    def wrapper():
+    def wrapper(*args, **kwargs):
         _send_analytics()
-        return f()
+        return f(*args, **kwargs)
 
     return wrapper
