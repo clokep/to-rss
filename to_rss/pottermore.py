@@ -103,7 +103,7 @@ def pottermore_page(tag, url, name, description):
             enclosure=feedgenerator.Enclosure(
                 url="https:" + main_image["url"],
                 length=str(main_image["details"]["size"]),
-                mimtype=main_image["contentType"],
+                mime_type=main_image["contentType"],
             ),
         )
 
