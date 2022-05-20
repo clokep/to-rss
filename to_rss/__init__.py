@@ -1,7 +1,10 @@
 import os
+import re
 from datetime import timedelta
 
-from flask import g
+from flask import g, request
+
+import requests
 
 from requests_cache import CachedSession
 
@@ -26,3 +29,55 @@ def get_session():
         )
 
     return session
+
+
+# Whether to report analytics.
+REPORT_ANALYTICS = os.getenv("REPORT_ANALYTICS", "").lower() == "true"
+API_ENDPOINT = "https://plausible.io/api/event"
+
+# Regular expression used to parse the number of subscribers from a feed reader's
+# User-Agent.
+SUBSCRIBERS_REGEX = re.compile(r"(\d+) subscribers")
+
+
+def report_page():
+    """
+    Fetch the User-Agent, IP address, URL, and referrer for the current request.
+
+    Submits them to the Plausible API for analytics.
+    See https://plausible.io/docs/events-api
+
+    Note that this doesn't get registered as a signal since it should only run on
+    API pages.
+    """
+    if REPORT_ANALYTICS:
+        return
+
+    user_agent = request.headers.get("User-Agent", "")
+
+    # RSS readers usually include the number of subscribers, pull that out, then
+    # sanitize the User-Agent.
+    match = SUBSCRIBERS_REGEX.search(user_agent)
+    subscribers = None
+    if match:
+        subscribers = int(match.group(1))
+        user_agent = SUBSCRIBERS_REGEX.sub("N subscribers", user_agent)
+
+    # Outgoing API data.
+    headers = {
+        "User-Agent": user_agent,
+        "X-Forwarded-For": request.remote_addr,
+        "Content-Type": "applicaton/json",
+    }
+    body = {
+        "name": "pageview",
+        "url": request.base_url,
+        "domain": "to-rss.xyz",
+    }
+
+    # See https://plausible.io/docs/custom-event-goals#using-custom-props
+    if subscribers is not None:
+        body["props"] = {"subscribers": subscribers}
+
+    # Send the API request.
+    requests.post(API_ENDPOINT, headers=headers, json=body)
