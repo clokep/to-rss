@@ -94,9 +94,9 @@ def serve_wikipedia():
 
 
 @app.route("/wikipedia/current_events/")
+@report_page
 @cache.cached()
 def serve_wikipedia_current_events():
-    report_page()
     return Response(get_articles(), mimetype="application/rss+xml")
 
 
@@ -108,17 +108,16 @@ def serve_nhl():
 
 
 @app.route("/nhl/news/")
+@report_page
 @cache.cached()
 def serve_nhl_news():
-    report_page()
     return Response(nhl_news(), mimetype="application/rss+xml")
 
 
 @app.route("/nhl/<team>/")
+@report_page
 @cache.cached()
 def serve_nhl_team_news(team):
-    report_page()
-
     if team not in VALID_TEAMS:
         abort(404)
 
@@ -133,8 +132,8 @@ def serve_patreon():
 
 
 # @app.route('/patreon/<user>/')
+@report_page
 def serve_patreon_user(user):
-    report_page()
     return Response(patreon_posts(user), mimetype="application/rss+xml")
 
 
@@ -146,9 +145,9 @@ def serve_pottermore():
 
 
 @app.route("/pottermore/news/")
+@report_page
 @cache.cached()
 def serve_pottermore_news():
-    report_page()
     return Response(
         pottermore_page(
             "news",
@@ -161,9 +160,9 @@ def serve_pottermore_news():
 
 
 @app.route("/pottermore/features/")
+@report_page
 @cache.cached()
 def serve_pottermore_features():
-    report_page()
     return Response(
         pottermore_page(
             "feature",
@@ -183,9 +182,9 @@ def serve_thunderbird():
 
 
 @app.route("/thunderbird/status-meetings/")
+@report_page
 @cache.cached()
 def serve_thunderbird_status_meetings():
-    report_page()
     return Response(thunderbird_status_meetings(), mimetype="application/rss+xml")
 
 
@@ -197,10 +196,9 @@ def serve_players_tribune():
 
 
 @app.route("/players_tribune/<sport>/")
+@report_page
 @cache.cached()
 def serve_players_tribune_sport(sport):
-    report_page()
-
     if sport not in VALID_SPORTS:
         abort(404)
 

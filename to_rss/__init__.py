@@ -1,3 +1,4 @@
+import functools
 import os
 import re
 from datetime import timedelta
@@ -40,7 +41,7 @@ API_ENDPOINT = "https://plausible.io/api/event"
 SUBSCRIBERS_REGEX = re.compile(r"(\d+) subscribers")
 
 
-def report_page():
+def _send_analytics():
     """
     Fetch the User-Agent, IP address, URL, and referrer for the current request.
 
@@ -81,3 +82,17 @@ def report_page():
 
     # Send the API request.
     requests.post(API_ENDPOINT, headers=headers, json=body)
+
+
+def report_page(f):
+    """
+    A decorator to mark a page as capturing page visits for analytics.
+
+    Should be placed outside any caching.
+    """
+    @functools.wraps(f)
+    def wrapper():
+        _send_analytics()
+        return f()
+
+    return wrapper
