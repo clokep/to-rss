@@ -21,7 +21,7 @@ requests_cache==0.9.4
 
 # For serving the resulting feed.
 Flask==2.1.2
-flask-caching==1.10.1
+flask-caching==1.11.0
 # For signals in Flask.
 blinker==1.4
 
