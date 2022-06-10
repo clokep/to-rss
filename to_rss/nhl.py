@@ -52,7 +52,10 @@ VALID_TEAMS = {
 def _size_from_url(image_url):
     """Returns the width and height of the image, parsed from the URL."""
     # The URL is like https://.../.../640x360/foo.jpg
-    return image_url.split("/")[-2].split("x")
+    try:
+        return image_url.split("/")[-2].split("x")
+    except ValueError:
+        return None, None
 
 
 def _get_news(name, page_url):
