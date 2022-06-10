@@ -1,13 +1,12 @@
 import json
 import logging
 
-import feedgenerator
-
 import iso8601
 
 import markdown
 
 from to_rss import get_session
+from to_rss.rss import RssFeed, ImageEnclosure
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +42,7 @@ def get_items(tag):
 def pottermore_page(tag, url, name, description):
     """Get a list of articles for a section of the Wizarding World site."""
     # Create the output feed.
-    feed = feedgenerator.Rss201rev2Feed(name, BASE_URL + "/" + tag, description)
+    feed = RssFeed(name, BASE_URL + "/" + tag, description)
 
     # Get all of the items, then reach into the JSON to get each post.
     data = get_items(tag)
@@ -100,10 +99,11 @@ def pottermore_page(tag, url, name, description):
             unique_id=post["id"],
             categories=[t["name"] for t in body["tags"]],
             updateddate=iso8601.parse_date(body["_updatedAt"]),
-            enclosure=feedgenerator.Enclosure(
+            enclosure=ImageEnclosure(
                 url="https:" + main_image["url"],
-                length=str(main_image["details"]["size"]),
                 mime_type=main_image["contentType"],
+                width=main_image["details"]["image"]["width"],
+                height=main_image["details"]["image"]["height"],
             ),
         )
 

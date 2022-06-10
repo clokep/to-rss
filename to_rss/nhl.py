@@ -1,10 +1,9 @@
 from bs4 import BeautifulSoup
 
-import feedgenerator
-
 import iso8601
 
 from to_rss import get_session
+from to_rss.rss import ImageEnclosure, RssFeed
 
 BASE_URL = "https://www.nhl.com"
 
@@ -57,7 +56,7 @@ def _get_news(name, page_url):
     # Process the HTML using BeautifulSoup!
     soup = BeautifulSoup(response.content, "html.parser")
 
-    feed = feedgenerator.Rss201rev2Feed(name, page_url, name)
+    feed = RssFeed(name, page_url, name)
 
     # Iterate over each article.
     for article in soup.find_all("article", class_="article-item"):
@@ -92,9 +91,7 @@ def _get_news(name, page_url):
             if image_url.startswith("//"):
                 image_url = "https:" + image_url
 
-            image = feedgenerator.Enclosure(
-                url=image_url, length="1", mime_type="image/jpg"
-            )
+            image = ImageEnclosure(url=image_url, mime_type="image/jpg")
 
         feed.add_item(
             title=str(article.h1.string),
