@@ -87,12 +87,12 @@ def _get_news(name, page_url):
         image = None
         if len(image_container) > 0:
             image = image_container[0].find_all("img")[0]
-            image_url = image.get("data-src")
-            if not image_url:
-                image_url = image.get("data-srcset")
-                if image_url:
-                    image_url = image_url.split(" ")[0]
-                else:
+            image_url = image.get("data-srcset")
+            if image_url:
+                image_url = image_url.split(" ")[0]
+            else:
+                image_url = image.get("data-src")
+                if not image_url:
                     image_url = image["src"]
             width, height = _size_from_url(image_url)
             if image_url.startswith("//"):
