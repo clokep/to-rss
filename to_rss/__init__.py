@@ -1,4 +1,5 @@
 import functools
+import logging
 import os
 import re
 from datetime import timedelta
@@ -8,6 +9,8 @@ from flask import g, request
 import requests
 
 from requests_cache import CachedSession
+
+logger = logging.getLogger(__name__)
 
 USE_CACHE_DIR = os.getenv("USE_CACHE_DIR", "").lower() == "true"
 
@@ -84,7 +87,10 @@ def _send_analytics():
         body["props"] = {"subscribers": subscribers}
 
     # Send the API request.
-    requests.post(API_ENDPOINT, headers=headers, json=body)
+    try:
+        requests.post(API_ENDPOINT, headers=headers, json=body)
+    except requests.RequestException:
+        logger.warning("Unable to connect to plausible.io")
 
 
 def report_page(f):

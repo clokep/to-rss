@@ -3,7 +3,7 @@ from feedgenerator.django.utils.encoding import iri_to_uri
 
 
 class ImageEnclosure:
-    "Represents an RSS enclosure"
+    """Represents an RSS image enclosure."""
 
     def __init__(self, url, mime_type, width=None, height=None, description=None):
         self.mime_type = mime_type
@@ -15,7 +15,7 @@ class ImageEnclosure:
 
 class RssFeed(Rss201rev2Feed):
     """
-    Fixes some oddities in the standard feedgnerator.Rss201rev2Feed.
+    Fixes some oddities in the standard feedgenerator.Rss201rev2Feed.
     """
 
     def add_item_elements(self, handler, item):
@@ -24,7 +24,7 @@ class RssFeed(Rss201rev2Feed):
         # Remove the enclosure, it will be added manually.
         item["enclosure"] = None
 
-        #
+        # Call the super method, more will be added afterward.
         super().add_item_elements(handler, item)
 
         # Enclosure without a length.
