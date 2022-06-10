@@ -10,6 +10,7 @@ class ImageEnclosure:
         self.url = iri_to_uri(url)
         self.width = width
         self.height = height
+        self.description = description
 
 
 class RssFeed(Rss201rev2Feed):
@@ -32,6 +33,8 @@ class RssFeed(Rss201rev2Feed):
             if enclosure.width and enclosure.height:
                 attrs["width"] = str(enclosure.width)
                 attrs["height"] = str(enclosure.height)
+            if enclosure.description:
+                attrs["description"] = enclosure.description
             handler.addQuickElement("enclosure", "", attrs)
 
         item["enclosure"] = enclosure

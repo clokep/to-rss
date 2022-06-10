@@ -88,7 +88,10 @@ def pottermore_page(tag, url, name, description):
             description += "\n\n"
 
         # The image at the top of the page.
-        main_image = body["mainImage"]["image"]["file"]
+        main_image = body["mainImage"]
+        image_file = main_image["image"]["file"]
+        image_details = image_file["details"]["image"]
+        description = main_image.get("imageAltText") or main_image["image"]["title"]
 
         feed.add_item(
             title=title,
@@ -100,10 +103,11 @@ def pottermore_page(tag, url, name, description):
             categories=[t["name"] for t in body["tags"]],
             updateddate=iso8601.parse_date(body["_updatedAt"]),
             enclosure=ImageEnclosure(
-                url="https:" + main_image["url"],
-                mime_type=main_image["contentType"],
-                width=main_image["details"]["image"]["width"],
-                height=main_image["details"]["image"]["height"],
+                url="https:" + image_file["url"],
+                mime_type=image_file["contentType"],
+                width=image_details["width"],
+                height=image_details["height"],
+                description=description,
             ),
         )
 
