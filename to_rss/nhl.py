@@ -49,6 +49,12 @@ VALID_TEAMS = {
 }
 
 
+def _size_from_url(image_url):
+    """Returns the width and height of the image, parsed from the URL."""
+    # The URL is like https://.../.../640x360/foo.jpg
+    return image_url.split("/")[-2].split("x")
+
+
 def _get_news(name, page_url):
     # Get the HTML page.
     response = get_session().get(page_url)
@@ -88,10 +94,13 @@ def _get_news(name, page_url):
                     image_url = image_url.split(" ")[0]
                 else:
                     image_url = image["src"]
+            width, height = _size_from_url(image_url)
             if image_url.startswith("//"):
                 image_url = "https:" + image_url
 
-            image = ImageEnclosure(url=image_url, mime_type="image/jpg")
+            image = ImageEnclosure(
+                url=image_url, mime_type="image/jpg", width=width, height=height
+            )
 
         feed.add_item(
             title=str(article.h1.string),
