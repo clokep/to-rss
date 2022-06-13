@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import feedgenerator
 
 from to_rss import get_session
+from to_rss.rss import RssFeed, ImageEnclosure
 
 BASE_URL = "https://www.theplayerstribune.com"
 
@@ -27,14 +28,18 @@ def sports_news(sport):
     # Get the human name.
     name = VALID_SPORTS[sport]
 
-    feed = feedgenerator.Rss201rev2Feed(name, page_url, name)
+    feed = RssFeed(name, page_url, name)
 
     # Iterate over each article.
     for article in soup.find_all("article"):
         link = article.contents[0]
 
+        # The image is in the first element, within a noscript tag.
+        picture = article.find("noscript").contents[0]
+        img = picture.contents[3]
+        image = ImageEnclosure(url=img["src"], mime_type="image/jpg")
+
         # Most of the info we need is in the 3rd element.
-        # Note that the first element is the image.
         elements = link.contents[2].contents
 
         # Get the article title.
@@ -50,7 +55,11 @@ def sports_news(sport):
             authors = None
 
         feed.add_item(
-            title=title, link=link["href"], description=excerpt, author_name=authors
+            title=title,
+            link=link["href"],
+            description=excerpt,
+            author_name=authors,
+            enclosure=image,
         )
 
     return feed.writeString("utf-8")
