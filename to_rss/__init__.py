@@ -1,13 +1,8 @@
-import functools
 import logging
 import os
-import re
 from datetime import timedelta
 
-from flask import g, request
-
-import requests
-
+from flask import g
 from requests_cache import CachedSession
 
 logger = logging.getLogger(__name__)
@@ -33,76 +28,3 @@ def get_session():
         )
 
     return session
-
-
-# Whether to report analytics.
-REPORT_ANALYTICS = os.getenv("REPORT_ANALYTICS", "").lower() == "true"
-API_ENDPOINT = "https://plausible.io/api/event"
-
-# Regular expression used to parse the number of subscribers from a feed reader's
-# User-Agent.
-SUBSCRIBERS_REGEX = re.compile(r"(\d+) subscribers")
-
-
-def _send_analytics():
-    """
-    Fetch the User-Agent, IP address, URL, and referrer for the current request.
-
-    Submits them to the Plausible API for analytics.
-    See https://plausible.io/docs/events-api
-
-    Note that this doesn't get registered as a signal since it should only run on
-    API pages.
-    """
-    if not REPORT_ANALYTICS:
-        return
-
-    user_agent = request.headers.get("User-Agent", "")
-
-    # RSS readers usually include the number of subscribers, pull that out, then
-    # sanitize the User-Agent.
-    match = SUBSCRIBERS_REGEX.search(user_agent)
-    subscribers = None
-    if match:
-        subscribers = int(match.group(1))
-        user_agent = SUBSCRIBERS_REGEX.sub("N subscribers", user_agent)
-
-    # Unpack the IP address from the reverse proxy, if one is being used.
-    client_ip_address = request.headers.get("X-Real-IP") or request.remote_addr
-
-    # Outgoing API data.
-    headers = {
-        "User-Agent": user_agent,
-        "X-Forwarded-For": client_ip_address,
-        "Content-Type": "application/json",
-    }
-    body = {
-        "name": "pageview",
-        "url": request.base_url,
-        "domain": "to-rss.xyz",
-    }
-
-    # See https://plausible.io/docs/custom-event-goals#using-custom-props
-    if subscribers is not None:
-        body["props"] = {"subscribers": subscribers}
-
-    # Send the API request.
-    try:
-        requests.post(API_ENDPOINT, headers=headers, json=body)
-    except requests.RequestException:
-        logger.warning("Unable to connect to plausible.io")
-
-
-def report_page(f):
-    """
-    A decorator to mark a page as capturing page visits for analytics.
-
-    Should be placed outside any caching.
-    """
-
-    @functools.wraps(f)
-    def wrapper(*args, **kwargs):
-        _send_analytics()
-        return f(*args, **kwargs)
-
-    return wrapper

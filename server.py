@@ -21,7 +21,7 @@ from requests_cache.backends.sqlite import get_cache_path
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-from to_rss import report_page, USE_CACHE_DIR
+from to_rss import USE_CACHE_DIR
 from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
 from to_rss.patreon import patreon_posts
 from to_rss.players_tribune import sports_news, VALID_SPORTS
@@ -94,7 +94,6 @@ def serve_wikipedia():
 
 
 @app.route("/wikipedia/current_events/")
-@report_page
 @cache.cached()
 def serve_wikipedia_current_events():
     return Response(get_articles(), mimetype="application/rss+xml")
@@ -108,14 +107,12 @@ def serve_nhl():
 
 
 @app.route("/nhl/news/")
-@report_page
 @cache.cached()
 def serve_nhl_news():
     return Response(nhl_news(), mimetype="application/rss+xml")
 
 
 @app.route("/nhl/<team>/")
-@report_page
 @cache.cached()
 def serve_nhl_team_news(team):
     if team not in VALID_TEAMS:
@@ -132,7 +129,6 @@ def serve_patreon():
 
 
 # @app.route('/patreon/<user>/')
-@report_page
 def serve_patreon_user(user):
     return Response(patreon_posts(user), mimetype="application/rss+xml")
 
@@ -145,7 +141,6 @@ def serve_pottermore():
 
 
 @app.route("/pottermore/news/")
-@report_page
 @cache.cached()
 def serve_pottermore_news():
     return Response(
@@ -160,7 +155,6 @@ def serve_pottermore_news():
 
 
 @app.route("/pottermore/features/")
-@report_page
 @cache.cached()
 def serve_pottermore_features():
     return Response(
@@ -182,7 +176,6 @@ def serve_thunderbird():
 
 
 @app.route("/thunderbird/status-meetings/")
-@report_page
 @cache.cached()
 def serve_thunderbird_status_meetings():
     return Response(thunderbird_status_meetings(), mimetype="application/rss+xml")
@@ -196,7 +189,6 @@ def serve_players_tribune():
 
 
 @app.route("/players_tribune/<sport>/")
-@report_page
 @cache.cached()
 def serve_players_tribune_sport(sport):
     if sport not in VALID_SPORTS:
