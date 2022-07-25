@@ -53,10 +53,12 @@ def pottermore_page(tag, url, name, description):
         # The actual text must be rebuilt from the multiple sections.
         description = body.get("intro", "")
         for section in body["section"]:
-            if section["contentTypeId"] == "textSection":
+            section_type = section["contentTypeId"]
+
+            if section_type == "textSection":
                 description += section["text"]
 
-            elif section["contentTypeId"] == "image":
+            elif section_type == "image":
                 # Add the image on a separate line.
                 image = section["image"]
                 alt = image.get("description") or image["title"]
@@ -64,7 +66,7 @@ def pottermore_page(tag, url, name, description):
                     f'<img src="https:{image["file"]["url"]}" alt="{alt}"></a>'
                 )
 
-            elif section["contentTypeId"] == "video":
+            elif section_type == "video":
                 # Add the preview image.
                 image = section["mainImage"]["image"]
                 alt = section["displayTitle"]
@@ -72,15 +74,20 @@ def pottermore_page(tag, url, name, description):
                     f'<img src="https:{image["file"]["url"]}" alt="{alt}"></a>'
                 )
 
-            elif section["contentTypeId"] == "excerpt":
+            elif section_type == "excerpt":
                 description += (
                     f'**{section["excerptURLTitle"]}**\n> {section["excerptText"]}'
+                )
+
+            elif section_type == "quote":
+                description += (
+                    f'**{section["quoteAttributionTitle"]}**\n> {section["quoteText"]}'
                 )
 
             else:
                 logger.error(
                     "Unknown section type: %s via %s / %s",
-                    section["contentTypeId"],
+                    section_type,
                     url,
                     title,
                 )
