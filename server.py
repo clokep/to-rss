@@ -10,21 +10,17 @@ from dotenv import load_dotenv
 # Load .env from the same directory as this file.
 load_dotenv(path.join(path.dirname(__file__), ".env"))
 
-from flask import abort, Flask, Response
-
-from flask_caching import Cache
-
-from jinja2 import Environment, FileSystemLoader
-
-from requests_cache.backends.sqlite import get_cache_path
-
 import sentry_sdk
+from flask import Flask, Response, abort
+from flask_caching import Cache
+from jinja2 import Environment, FileSystemLoader
+from requests_cache.backends.sqlite import get_cache_path
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from to_rss import USE_CACHE_DIR
-from to_rss.nhl import nhl_news, team_news, VALID_TEAMS
+from to_rss.nhl import VALID_TEAMS, nhl_news, team_news
 from to_rss.patreon import patreon_posts
-from to_rss.players_tribune import sports_news, VALID_SPORTS
+from to_rss.players_tribune import VALID_SPORTS, sports_news
 from to_rss.pottermore import pottermore_page
 from to_rss.thunderbird import thunderbird_status_meetings
 from to_rss.wikipedia import get_articles

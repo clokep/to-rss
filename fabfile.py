@@ -1,9 +1,8 @@
 import json
 import sys
 
-from invoke import task
-
 import requests
+from invoke import task
 
 
 @task(name="reload")

@@ -2,11 +2,10 @@ import json
 import logging
 
 import iso8601
-
 import markdown
 
 from to_rss import get_session
-from to_rss.rss import RssFeed, ImageEnclosure
+from to_rss.rss import ImageEnclosure, RssFeed
 
 logger = logging.getLogger(__name__)
 

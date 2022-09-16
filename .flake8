@@ -1,10 +1,6 @@
 [flake8]
-# We have newlines between each package.
-ignore = I202
 exclude =
     .git,
     __pycache__,
     .cache
 max-line-length = 150
-application-import-names = to_rss, server
-import-order-style = appnexus

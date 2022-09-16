@@ -1,12 +1,9 @@
-from datetime import date, datetime, timedelta
 import logging
+from datetime import date, datetime, timedelta
 
 import feedgenerator
-
 import mwcomposerfromhell
-
 import mwparserfromhell
-
 from sentry_sdk import start_span
 
 from to_rss import get_session

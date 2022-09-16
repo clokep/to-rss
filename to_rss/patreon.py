@@ -3,7 +3,6 @@ from datetime import datetime
 from os import environ
 
 import feedgenerator
-
 import selenium
 from selenium import webdriver
 

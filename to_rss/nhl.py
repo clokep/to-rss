@@ -1,6 +1,5 @@
-from bs4 import BeautifulSoup
-
 import iso8601
+from bs4 import BeautifulSoup
 
 from to_rss import get_session
 from to_rss.rss import ImageEnclosure, RssFeed

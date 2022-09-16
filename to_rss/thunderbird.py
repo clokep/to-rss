@@ -1,9 +1,8 @@
 from datetime import datetime
 from urllib.parse import parse_qs, urlparse
 
-from bs4 import BeautifulSoup
-
 import feedgenerator
+from bs4 import BeautifulSoup
 
 from to_rss import get_session
 

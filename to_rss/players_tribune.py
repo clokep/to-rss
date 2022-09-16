@@ -1,9 +1,7 @@
 from bs4 import BeautifulSoup
 
-import feedgenerator
-
 from to_rss import get_session
-from to_rss.rss import RssFeed, ImageEnclosure
+from to_rss.rss import ImageEnclosure, RssFeed
 
 BASE_URL = "https://www.theplayerstribune.com"
 
