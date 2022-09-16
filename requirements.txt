@@ -17,11 +17,11 @@ feedgenerator==2.0.0
 
 # For downloading articles.
 requests==2.28.1
-requests_cache==0.9.5
+requests_cache==0.9.6
 
 # For serving the resulting feed.
-Flask==2.1.3
-flask-caching==2.0.0
+Flask==2.2.2
+flask-caching==2.0.1
 # For signals in Flask.
 blinker==1.5
 
@@ -29,7 +29,7 @@ blinker==1.5
 gunicorn==20.1.0
 
 # For loading configuration.
-python-dotenv==0.20.0
+python-dotenv==0.21.0
 
 # For error reporting.
 sentry-sdk  # pyup: ignore
