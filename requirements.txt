@@ -1,6 +1,6 @@
 # For Wikipedia.
 mwparserfromhell==0.6.4
-mwcomposerfromhell==0.4
+mwcomposerfromhell==0.5
 
 # For NHL, The Players Tribune, Thunderbird, and Patreon sites.
 beautifulsoup4==4.11.1
