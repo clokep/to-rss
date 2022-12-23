@@ -79,9 +79,10 @@ def pottermore_page(tag, url, name, description):
                 )
 
             elif section_type == "quote":
-                description += (
-                    f'**{section["quoteAttributionTitle"]}**\n> {section["quoteText"]}'
+                title = (
+                    section.get("quoteAttributionTitle") or section["quoteAttribution"]
                 )
+                description += f'**{title}**\n> {section["quoteText"]}'
 
             else:
                 logger.error(
