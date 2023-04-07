@@ -79,11 +79,13 @@ def pottermore_page(tag, url, name, description):
                 )
 
             elif section_type == "quote":
-                title = (
-                    section.get("quoteAttributionTitle") or section["quoteAttribution"]
+                section_title = section.get("quoteAttributionTitle") or section.get(
+                    "quoteAttribution"
                 )
-                description += f'**{title}**\n> {section["quoteText"]}'
-
+                if section_title:
+                    description += f'**{section_title}**\n> {section["quoteText"]}'
+                else:
+                    description += f'\n> {section["quoteText"]}'
             else:
                 logger.error(
                     "Unknown section type: %s via %s / %s",
