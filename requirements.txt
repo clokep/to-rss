@@ -3,33 +3,33 @@ mwparserfromhell==0.6.4
 mwcomposerfromhell==0.5
 
 # For NHL, The Players Tribune, Thunderbird, and Patreon sites.
-beautifulsoup4==4.11.1
+beautifulsoup4==4.12.1
 iso8601==1.0.2
 
 # For Patreon.
 selenium==4.2.0
 
 # For Pottermore.
-Markdown==3.4.1
+Markdown==3.4.3
 
 # For generating RSS.
 feedgenerator==2.0.0
 
 # For downloading articles.
-requests==2.28.1
+requests==2.28.2
 requests_cache==0.9.6
 
 # For serving the resulting feed.
-Flask==2.2.2
-flask-caching==2.0.1
+Flask==2.2.3
+flask-caching==2.0.2
 # For signals in Flask.
-blinker==1.5
+blinker==1.6
 
 # For deploying.
 gunicorn==20.1.0
 
 # For loading configuration.
-python-dotenv==0.21.0
+python-dotenv==1.0.0
 
 # For error reporting.
 sentry-sdk  # pyup: ignore
