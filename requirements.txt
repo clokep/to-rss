@@ -23,7 +23,7 @@ requests_cache==0.9.6
 Flask==2.3.2
 flask-caching==2.0.2
 # For signals in Flask.
-blinker==1.6
+blinker==1.6.2
 
 # For deploying.
 gunicorn==20.1.0
