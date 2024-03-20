@@ -2,7 +2,7 @@
 https://codeload.github.com/fabric/fabric/zip/2d89b122ed05550c0b4b1fd8836b4a31060ad2a5
 
 # Formatting.
-black==22.8.0
+black==24.3.0
 isort==5.10.1
 
 # Style checking.
