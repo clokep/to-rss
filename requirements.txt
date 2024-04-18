@@ -26,7 +26,7 @@ flask-caching==2.0.2
 blinker==1.6.2
 
 # For deploying.
-gunicorn==20.1.0
+gunicorn==22.0.0
 
 # For loading configuration.
 python-dotenv==1.0.0
