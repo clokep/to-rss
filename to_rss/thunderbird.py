@@ -45,7 +45,7 @@ def _get_level(element):
         if c.startswith("lst-kix_"):
             return int(c[c.rfind("-") + 1 :])
 
-    raise ValueError(f'No indentation level found: {element["class"]}')
+    raise ValueError(f"No indentation level found: {element['class']}")
 
 
 def thunderbird_status_meetings():

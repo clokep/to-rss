@@ -75,7 +75,7 @@ def pottermore_page(tag, url, name, description):
 
             elif section_type == "excerpt":
                 description += (
-                    f'**{section["excerptURLTitle"]}**\n> {section["excerptText"]}'
+                    f"**{section['excerptURLTitle']}**\n> {section['excerptText']}"
                 )
 
             elif section_type == "quote":
@@ -83,9 +83,9 @@ def pottermore_page(tag, url, name, description):
                     "quoteAttribution"
                 )
                 if section_title:
-                    description += f'**{section_title}**\n> {section["quoteText"]}'
+                    description += f"**{section_title}**\n> {section['quoteText']}"
                 else:
-                    description += f'\n> {section["quoteText"]}'
+                    description += f"\n> {section['quoteText']}"
             else:
                 logger.error(
                     "Unknown section type: %s via %s / %s",

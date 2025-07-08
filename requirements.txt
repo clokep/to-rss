@@ -1,35 +1,35 @@
 # For Wikipedia.
-mwparserfromhell==0.6.4
+mwparserfromhell==0.7.2
 mwcomposerfromhell==0.5
 
 # For NHL, The Players Tribune, Thunderbird, and Patreon sites.
-beautifulsoup4==4.12.1
-iso8601==1.0.2
+beautifulsoup4==4.13.4
+iso8601==2.1.0
 
 # For Patreon.
-selenium==4.2.0
+selenium==4.34.2
 
 # For Pottermore.
-Markdown==3.4.3
+Markdown==3.8.2
 
 # For generating RSS.
-feedgenerator==2.0.0
+feedgenerator==2.1.0
 
 # For downloading articles.
-requests==2.31.0
-requests_cache==0.9.6
+requests==2.32.4
+requests_cache==1.2.1
 
 # For serving the resulting feed.
-Flask==2.3.2
-flask-caching==2.0.2
+Flask==3.1.1
+flask-caching==2.3.1
 # For signals in Flask.
-blinker==1.6.2
+blinker==1.9.0
 
 # For deploying.
-gunicorn==22.0.0
+gunicorn==23.0.0
 
 # For loading configuration.
-python-dotenv==1.0.0
+python-dotenv==1.1.1
 
 # For error reporting.
 sentry-sdk  # pyup: ignore
