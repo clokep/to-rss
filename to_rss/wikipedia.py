@@ -19,13 +19,13 @@ def get_current_events_by_date(lookup_date):
     # https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#.23time with
     # a format of "Y F j". This is awkward because we want the day *not* zero
     # padded, but the month as a string.
-    datestr = f"{lookup_date.year} {lookup_date.strftime('%B')} {lookup_date.day}"
+    datestr = f"{lookup_date.year}_{lookup_date.strftime('%B')}_{lookup_date.day}"
     return "Portal:Current_events/" + datestr
 
 
 def get_article(url):
     """Fetches and returns the article content as a string."""
-    response = get_session().get(url, params={"action": "raw"})
+    response = get_session().get(url, params={"action": "raw"}, headers={'User-agent': 'Current Events to RSS'})
     return response.text
 
 
@@ -39,7 +39,7 @@ def get_articles():
     which then includes the past seven days.
     """
     resolver = mwcomposerfromhell.ArticleResolver(
-        base_url="https://en.wikipedia.org/wiki/"
+        base_url="https://en.m.wikipedia.org/wiki/"
     )
     feed = feedgenerator.Rss201rev2Feed(
         "Wikipedia: Portal: Current events",
