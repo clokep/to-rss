@@ -9,3 +9,5 @@
 .idea
 .python-version
 
+# Session cache
+to_rss_requests.sqlite
