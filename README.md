@@ -1,7 +1,5 @@
 ## To RSS
 
-[![pipeline status](https://travis-ci.org/clokep/to-rss.svg?branch=master)](https://travis-ci.org/clokep/to-rss)
-
 This project aims to provide RSS feeds for platforms that should just provide
 RSS feeds. It supports a few different endpoints.
 
