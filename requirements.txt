@@ -8,6 +8,7 @@ iso8601==2.1.0
 
 # For Patreon.
 selenium==4.35.0
+PyVirtualDisplay==3.0
 
 # For Pottermore.
 Markdown==3.9
