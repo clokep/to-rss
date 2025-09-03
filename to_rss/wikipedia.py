@@ -25,7 +25,11 @@ def get_current_events_by_date(lookup_date):
 
 def get_article(url):
     """Fetches and returns the article content as a string."""
-    response = get_session().get(url, params={"action": "raw"})
+    response = get_session().get(
+        url,
+        params={"action": "raw"},
+        headers={"User-agent": "to-rssbot (+https://www.to-rss.xyz/)"},
+    )
     return response.text
 
 
