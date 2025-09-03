@@ -38,3 +38,5 @@ only emails out updates. This provides a way to see those over RSS.
 It is a Flask application that serves RSS feeds generated using
 [FeedGenerator](https://github.com/getpelican/feedgenerator). Generally
 information is pulled using requests and parsed with BeautifulSoup4.
+
+Run the application with `flask run`.
