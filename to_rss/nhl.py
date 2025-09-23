@@ -1,4 +1,5 @@
-import iso8601
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 
 from to_rss import get_session
@@ -48,15 +49,6 @@ VALID_TEAMS = {
 }
 
 
-def _size_from_url(image_url):
-    """Returns the width and height of the image, parsed from the URL."""
-    # The URL is like https://.../.../640x360/foo.jpg
-    try:
-        return image_url.split("/")[-2].split("x")
-    except ValueError:
-        return None, None
-
-
 def _get_news(name, page_url):
     # Get the HTML page.
     response = get_session().get(page_url)
@@ -67,51 +59,30 @@ def _get_news(name, page_url):
     feed = RssFeed(name, page_url, name)
 
     # Iterate over each article.
-    for article in soup.find_all("article", class_="article-item"):
-        # Get the author element, and pull out the name (and maybe a link).
-        author = article.find_all(class_="article-item__contributor")[0]
-        author_name = author.contents[0].strip().lstrip("by").strip()
-        if author.a:
-            author_link = author.a["href"]
-        else:
-            author_link = None
+    for article in soup.find_all(class_="nhl-c-card-wrap"):
+        title = article.find("h3")
 
-        # Get the date element and parse it to a datetime.
-        date = article.find_all(class_="article-item__date")[0]
+        if article.name == "a":
+            link = article["href"]
+        else:
+            link = article.find("a")["href"]
 
         # The content is split into two pieces that must be re-assembled.
-        preview = article.find_all("div", class_="article-item__preview")[0]
-        # Note that the full body isn't available, it could be grabbed from the
-        # data-url though!
+        preview = article.find("div", class_="fa-text__body")
+        if preview is not None:
+            description = preview.get_text()
+        else:
+            description = ""
 
         # Find an image from the video preview.
-        image_container = article.find_all("div", class_="article-item__img-container")
-        image = None
-        if len(image_container) > 0:
-            image = image_container[0].find_all("img")[0]
-            image_url = image.get("data-srcset")
-            if image_url:
-                image_url = image_url.split(" ")[0]
-            else:
-                image_url = image.get("data-src")
-                if not image_url:
-                    image_url = image["src"]
-            width, height = _size_from_url(image_url)
-            if image_url.startswith("//"):
-                image_url = "https:" + image_url
-
-            image = ImageEnclosure(
-                url=image_url, mime_type="image/jpg", width=width, height=height
-            )
+        image = article.find("img")
 
         feed.add_item(
-            title=str(article.h1.string),
-            link=BASE_URL + article["data-url"],
-            description=str(preview),
-            author_name=author_name,
-            author_link=author_link,
-            pubdate=iso8601.parse_date(date["data-date"]),
-            enclosure=image,
+            title=title.string,
+            link=link,
+            description=description,
+            pubdate=datetime.fromisoformat(article.find("time")["datetime"]),
+            enclosure=ImageEnclosure(url=image["src"], mime_type="image/jpg"),
         )
 
     return feed.writeString("utf-8")
