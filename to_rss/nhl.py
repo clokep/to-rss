@@ -29,13 +29,13 @@ VALID_TEAMS = {
     "lightning": "Tampa Bay Lightning",
     "mapleleafs": "Toronto Maple Leafs",
     # Central division.
-    "coyotes": "Arizona Coyotes",
     "blackhawks": "Chicago Blackhawks",
     "avalanche": "Colorado Avalanche",
     "stars": "Dallas Stars",
     "wild": "Minnesota Wild",
     "predators": "Nashville Predators",
     "blues": "St. Louis Blues",
+    "utah": "Utah Mammoth",
     "jets": "Winnipeg Jets",
     # Pacific division.
     "ducks": "Anaheim Ducks",
