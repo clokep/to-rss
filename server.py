@@ -23,7 +23,6 @@ from to_rss.nhl import VALID_TEAMS, nhl_news, team_news  # noqa: E402
 from to_rss.patreon import patreon_posts  # noqa: E402
 from to_rss.players_tribune import VALID_SPORTS, sports_news  # noqa: E402
 from to_rss.pottermore import pottermore_page  # noqa: E402
-from to_rss.thunderbird import thunderbird_status_meetings  # noqa: E402
 from to_rss.wikipedia import get_articles  # noqa: E402
 
 # Configure a file system cache to store responses for 5 minutes. With the
@@ -170,12 +169,6 @@ def serve_pottermore_features():
 def serve_thunderbird():
     template = env.get_template("thunderbird.html")
     return template.render()
-
-
-@app.route("/thunderbird/status-meetings/")
-@cache.cached()
-def serve_thunderbird_status_meetings():
-    return Response(thunderbird_status_meetings(), mimetype="application/rss+xml")
 
 
 # The Players Tribune endpoints.
