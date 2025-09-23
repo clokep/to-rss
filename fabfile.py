@@ -33,7 +33,7 @@ def deploy(c):
     with c.cd("to-rss"):
         print("Fetching new code.")
         c.run("git fetch")
-        c.run("git reset --hard origin/master")
+        c.run("git reset --hard origin/main")
 
         print("Cleaning old Python files.")
         c.run("pyclean .")

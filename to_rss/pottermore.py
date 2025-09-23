@@ -86,6 +86,13 @@ def pottermore_page(tag, url, name, description):
                     description += f"**{section_title}**\n> {section['quoteText']}"
                 else:
                     description += f"\n> {section['quoteText']}"
+
+            elif section_type == "poll":
+                section_title = section.get("displayTitle")
+                description += f"**{section_title}**\n\n"
+                for option in section["answer"]:
+                    description += f"* {option}\n"
+
             else:
                 logger.error(
                     "Unknown section type: %s via %s / %s",
@@ -100,7 +107,7 @@ def pottermore_page(tag, url, name, description):
         main_image = body["mainImage"]
         image_file = main_image["image"]["file"]
         image_details = image_file["details"]["image"]
-        description = main_image.get("imageAltText") or main_image["image"]["title"]
+        image_alt = main_image.get("imageAltText") or main_image["image"]["title"]
 
         feed.add_item(
             title=title,
@@ -116,7 +123,7 @@ def pottermore_page(tag, url, name, description):
                 mime_type=image_file["contentType"],
                 width=image_details["width"],
                 height=image_details["height"],
-                description=description,
+                description=image_alt,
             ),
         )
 
