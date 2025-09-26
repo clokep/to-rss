@@ -20,7 +20,6 @@ from sentry_sdk.integrations.flask import FlaskIntegration  # noqa: E402
 
 from to_rss import USE_CACHE_DIR  # noqa: E402
 from to_rss.nhl import VALID_TEAMS, nhl_news, team_news  # noqa: E402
-from to_rss.patreon import patreon_posts  # noqa: E402
 from to_rss.players_tribune import VALID_SPORTS, sports_news  # noqa: E402
 from to_rss.pottermore import (  # noqa: E402
     pottermore_features,
@@ -118,18 +117,6 @@ def serve_nhl_team_news(team):
         abort(404)
 
     return Response(team_news(team), mimetype="application/rss+xml")
-
-
-# Patreon end points.
-# @app.route('/patreon/')
-def serve_patreon():
-    template = env.get_template("patreon.html")
-    return template.render()
-
-
-# @app.route('/patreon/<user>/')
-def serve_patreon_user(user):
-    return Response(patreon_posts(user), mimetype="application/rss+xml")
 
 
 # Pottermore endpoints.

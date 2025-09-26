@@ -6,10 +6,6 @@ mwcomposerfromhell==0.5
 beautifulsoup4==4.13.5
 iso8601==2.1.0
 
-# For Patreon.
-selenium==4.35.0
-PyVirtualDisplay==3.0
-
 # For Pottermore.
 Markdown==3.9
 
