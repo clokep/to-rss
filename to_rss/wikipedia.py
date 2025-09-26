@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 BASE_URL = "https://en.wikipedia.org/wiki/"
 
 
-def get_current_events_by_date(lookup_date):
+def get_current_events_by_date(lookup_date: date) -> str:
     # Format the date as a string, this is formatted using the #time extension
     # to Wiki syntax:
     # https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#.23time with
@@ -23,7 +23,7 @@ def get_current_events_by_date(lookup_date):
     return "Portal:Current_events/" + datestr
 
 
-def get_article(url):
+def get_article(url: str) -> str:
     """Fetches and returns the article content as a string."""
     response = get_session().get(
         url,
@@ -33,7 +33,7 @@ def get_article(url):
     return response.text
 
 
-def get_articles():
+def get_articles() -> str:
     """
     Returns a map of dates to a list of current events on that date.
 

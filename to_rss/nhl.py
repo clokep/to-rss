@@ -52,7 +52,7 @@ VALID_TEAMS = {
 }
 
 
-def _get_news(name, page_url):
+def _get_news(name: str, page_url: str) -> str:
     # Get the HTML page.
     response = get_session().get(page_url)
 
@@ -100,11 +100,11 @@ def _get_news(name, page_url):
     return feed.writeString("utf-8")
 
 
-def nhl_news():
+def nhl_news() -> str:
     return _get_news("NHL Headlines", f"{BASE_URL}/news/")
 
 
-def team_news(team):
+def team_news(team: str) -> str:
     if team == "fr-canadiens":
         url = "fr/canadiens"
     else:

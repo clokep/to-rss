@@ -15,7 +15,7 @@ VALID_SPORTS = {
 }
 
 
-def sports_news(sport):
+def sports_news(sport: str) -> str:
     # Get the HTML page.
     page_url = BASE_URL + "/sports/" + sport
     response = get_session().get(page_url)

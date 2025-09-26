@@ -3,6 +3,7 @@ https://codeload.github.com/fabric/fabric/zip/2d89b122ed05550c0b4b1fd8836b4a3106
 
 # Static analyzer.
 ruff==0.13.1
+ty==0.0.1a21
 
 # Tests.
 pytest==8.4.2

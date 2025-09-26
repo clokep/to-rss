@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Any
 
 import iso8601
 import markdown
@@ -13,7 +14,7 @@ BASE_URL = "https://www.wizardingworld.com"
 API_URL = "https://api.wizardingworld.com/v3"
 
 
-def get_items(tag):
+def get_items(tag: str) -> Any:
     """Use the Wizarding World API to get recent news posts."""
     body = {
         "operationName": "ContentQuery",
@@ -38,7 +39,7 @@ def get_items(tag):
     return response.json()
 
 
-def pottermore_page(tag, url, name, description):
+def pottermore_page(tag: str, url: str, name: str, description: str) -> str:
     """Get a list of articles for a section of the Wizarding World site."""
     # Create the output feed.
     feed = RssFeed(name, BASE_URL + "/" + tag, description)
@@ -133,7 +134,7 @@ def pottermore_page(tag, url, name, description):
     return feed.writeString("utf-8")
 
 
-def pottermore_news():
+def pottermore_news() -> str:
     return pottermore_page(
         "news",
         "news",
@@ -142,7 +143,7 @@ def pottermore_news():
     )
 
 
-def pottermore_features():
+def pottermore_features() -> str:
     return pottermore_page(
         "feature",
         "features",
