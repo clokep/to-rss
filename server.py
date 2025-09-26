@@ -22,7 +22,10 @@ from to_rss import USE_CACHE_DIR  # noqa: E402
 from to_rss.nhl import VALID_TEAMS, nhl_news, team_news  # noqa: E402
 from to_rss.patreon import patreon_posts  # noqa: E402
 from to_rss.players_tribune import VALID_SPORTS, sports_news  # noqa: E402
-from to_rss.pottermore import pottermore_page  # noqa: E402
+from to_rss.pottermore import (  # noqa: E402
+    pottermore_features,
+    pottermore_news,
+)
 from to_rss.wikipedia import get_articles  # noqa: E402
 
 # Configure a file system cache to store responses for 5 minutes. With the
@@ -139,29 +142,13 @@ def serve_pottermore():
 @app.route("/pottermore/news/")
 @cache.cached()
 def serve_pottermore_news():
-    return Response(
-        pottermore_page(
-            "news",
-            "news",
-            "Pottermore News",
-            "Get the latest Wizarding World news here. Faster than an owl and more accurate than the Daily Prophet",
-        ),
-        mimetype="application/rss+xml",
-    )
+    return Response(pottermore_news(), mimetype="application/rss+xml")
 
 
 @app.route("/pottermore/features/")
 @cache.cached()
 def serve_pottermore_features():
-    return Response(
-        pottermore_page(
-            "feature",
-            "features",
-            "Pottermore Features",
-            "For beginners, for novices, for Harry Potter superfans going 20 years-strong, dig deep into the Wizarding World with our collection of features",  # noqa E501
-        ),
-        mimetype="application/rss+xml",
-    )
+    return Response(pottermore_features(), mimetype="application/rss+xml")
 
 
 # Thunderbird endpoints.

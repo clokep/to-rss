@@ -131,3 +131,21 @@ def pottermore_page(tag, url, name, description):
         logger.error(f"Created empty feed for {url}")
 
     return feed.writeString("utf-8")
+
+
+def pottermore_news():
+    return pottermore_page(
+        "news",
+        "news",
+        "Pottermore News",
+        "Get the latest Wizarding World news here. Faster than an owl and more accurate than the Daily Prophet",
+    )
+
+
+def pottermore_features():
+    return pottermore_page(
+        "feature",
+        "features",
+        "Pottermore Features",
+        "For beginners, for novices, for Harry Potter superfans going 20 years-strong, dig deep into the Wizarding World with our collection of features",
+    )
