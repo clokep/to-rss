@@ -93,6 +93,12 @@ def get_articles():
                     # Stop processing this article.
                     break
 
-        # TODO If the template is not found, we should do something.
+            else:
+                logger.error(
+                    f"'Current events' template not found in article for {day}"
+                )
+
+    if len(feed.items) == 0:
+        logger.error("Created empty feed for Wikipedia current events")
 
     return feed.writeString("utf-8")

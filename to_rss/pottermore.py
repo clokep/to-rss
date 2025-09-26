@@ -127,4 +127,7 @@ def pottermore_page(tag, url, name, description):
             ),
         )
 
+    if len(feed.items) == 0:
+        logger.error(f"Created empty feed for {url}")
+
     return feed.writeString("utf-8")

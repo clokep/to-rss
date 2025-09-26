@@ -1,9 +1,12 @@
+import logging
 from datetime import datetime
 
 from bs4 import BeautifulSoup
 
 from to_rss import get_session
 from to_rss.rss import ImageEnclosure, RssFeed
+
+logger = logging.getLogger(__name__)
 
 BASE_URL = "https://www.nhl.com"
 
@@ -77,13 +80,22 @@ def _get_news(name, page_url):
         # Find an image from the video preview.
         image = article.find("img")
 
+        time = article.find("time")
+        if time:
+            pubdate = datetime.fromisoformat(time["datetime"])
+        else:
+            pubdate = None
+
         feed.add_item(
             title=title.string,
             link=link,
             description=description,
-            pubdate=datetime.fromisoformat(article.find("time")["datetime"]),
+            pubdate=pubdate,
             enclosure=ImageEnclosure(url=image["src"], mime_type="image/jpg"),
         )
+
+    if len(feed.items) == 0:
+        logger.error(f"Created empty feed for {page_url}")
 
     return feed.writeString("utf-8")
 
