@@ -1,5 +1,5 @@
 # Fabric v2.
-https://codeload.github.com/fabric/fabric/zip/2d89b122ed05550c0b4b1fd8836b4a31060ad2a5
+fabric==3.2.2
 
 # Static analyzer.
 ruff==0.13.1
