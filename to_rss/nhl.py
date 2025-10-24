@@ -79,6 +79,10 @@ def _get_news(name: str, page_url: str) -> str:
 
         # Find an image from the video preview.
         image = article.find("img")
+        if image:
+            enclosure = ImageEnclosure(url=image["src"], mime_type="image/jpg")
+        else:
+            enclosure = None
 
         time = article.find("time")
         if time:
@@ -91,7 +95,7 @@ def _get_news(name: str, page_url: str) -> str:
             link=link,
             description=description,
             pubdate=pubdate,
-            enclosure=ImageEnclosure(url=image["src"], mime_type="image/jpg"),
+            enclosure=enclosure,
         )
 
     if len(feed.items) == 0:
