@@ -68,11 +68,12 @@ def pottermore_page(tag: str, url: str, name: str, description: str) -> str:
 
             elif section_type == "video":
                 # Add the preview image.
-                image = section["mainImage"]["image"]
-                alt = section["displayTitle"]
-                description += (
-                    f'<img src="https:{image["file"]["url"]}" alt="{alt}"></a>'
-                )
+                if "mainImage" in section:
+                    image = section["mainImage"]["image"]
+                    alt = section["displayTitle"]
+                    description += (
+                        f'<img src="https:{image["file"]["url"]}" alt="{alt}"></a>'
+                    )
 
             elif section_type == "excerpt":
                 description += (

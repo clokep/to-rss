@@ -66,10 +66,10 @@ def get_articles() -> str:
         )
         article = get_article(url)
         # Parse the article contents.
-        with start_span(op="parse-wikitext", description="Parse " + url):
+        with start_span(op="parse-wikitext", name="Parse " + url):
             wikicode = mwparserfromhell.parse(article)
 
-        with start_span(op="wiki-to-html", description="Convert " + url):
+        with start_span(op="wiki-to-html", name="Convert " + url):
             # Current event pages have a top-level template.
             for template in wikicode.ifilter_templates():
                 if template.name == "Current events":
