@@ -6,4 +6,4 @@ ruff==0.13.1
 ty==0.0.1a21
 
 # Tests.
-pytest==8.4.2
+pytest==9.0.3
