@@ -26,7 +26,7 @@ blinker==1.9.0
 gunicorn==23.0.0
 
 # For loading configuration.
-python-dotenv==1.1.1
+python-dotenv==1.2.2
 
 # For error reporting.
 sentry-sdk  # pyup: ignore
