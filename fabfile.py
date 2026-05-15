@@ -8,7 +8,7 @@ from invoke import task
 @task(name="reload")
 def _reload(c):
     """Restart the web-app."""
-    with open(".pythonanywhere.json", "r") as f:
+    with open(".pythonanywhere.json") as f:
         # Has keys api_token, username, and domain_name.
         config = json.load(f)
 

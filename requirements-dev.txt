@@ -1,9 +1,9 @@
 # Fabric v2.
-fabric==3.2.2
+fabric==3.2.3
 
 # Static analyzer.
-ruff==0.13.1
-ty==0.0.1a21
+ruff==0.15.13
+ty==0.0.36
 
 # Tests.
 pytest==9.0.3

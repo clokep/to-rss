@@ -64,11 +64,18 @@ def _get_news(name: str, page_url: str) -> str:
     # Iterate over each article.
     for article in soup.find_all(class_="nhl-c-card-wrap"):
         title = article.find("h3")
+        if title is None:
+            logger.error("No title found")
+            continue
 
         if article.name == "a":
             link = article["href"]
         else:
-            link = article.find("a")["href"]
+            anchor = article.find("a")
+            if anchor is None:
+                logger.error("No article URL found")
+                continue
+            link = anchor["href"]
 
         # The content is split into two pieces that must be re-assembled.
         preview = article.find("div", class_="fa-text__body")
@@ -80,13 +87,13 @@ def _get_news(name: str, page_url: str) -> str:
         # Find an image from the video preview.
         image = article.find("img")
         if image:
-            enclosure = ImageEnclosure(url=image["src"], mime_type="image/jpg")
+            enclosure = ImageEnclosure(url=str(image["src"]), mime_type="image/jpg")
         else:
             enclosure = None
 
         time = article.find("time")
         if time:
-            pubdate = datetime.fromisoformat(time["datetime"])
+            pubdate = datetime.fromisoformat(str(time["datetime"]))
         else:
             pubdate = None
 
