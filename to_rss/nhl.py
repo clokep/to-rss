@@ -1,4 +1,6 @@
 import logging
+import os
+import sys
 from datetime import datetime
 
 from bs4 import BeautifulSoup
@@ -63,10 +65,7 @@ def _get_news(name: str, page_url: str) -> str:
 
     # Iterate over each article.
     for article in soup.find_all(class_="nhl-c-card-wrap"):
-        title = article.find("h3")
-        if title is None:
-            logger.error("No title found")
-            continue
+        header = article.find("h3")
 
         if article.name == "a":
             link = article["href"]
@@ -91,6 +90,11 @@ def _get_news(name: str, page_url: str) -> str:
         else:
             enclosure = None
 
+        if header:
+            title = header.string
+        elif image:
+            title = image["alt"]
+
         time = article.find("time")
         if time:
             pubdate = datetime.fromisoformat(str(time["datetime"]))
@@ -98,7 +102,7 @@ def _get_news(name: str, page_url: str) -> str:
             pubdate = None
 
         feed.add_item(
-            title=title.string,
+            title=title,
             link=link,
             description=description,
             pubdate=pubdate,
@@ -122,3 +126,24 @@ def team_news(team: str) -> str:
         url = team
 
     return _get_news(f"{VALID_TEAMS[team]} News", f"{BASE_URL}/{url}/news/")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        team = "nhl"
+    else:
+        team = sys.argv[1]
+
+    import to_rss
+
+    to_rss.DISABLE_CACHED_SESSION = True
+
+    if team == "nhl":
+        print(nhl_news())
+
+    elif team not in VALID_TEAMS:
+        print(f"Invalid team name: {team}")
+        exit(1)
+
+    else:
+        print(team_news(team))
