@@ -44,7 +44,7 @@ def pottermore_page(tag: str, url: str, name: str, description: str) -> str:
     # Create the output feed.
     feed = RssFeed(name, BASE_URL + "/" + tag, description)
 
-    # Get all of the items, then reach into the JSON to get each post.
+    # Get all the items, then reach into the JSON to get each post.
     data = get_items(tag)
     for post in data["data"]["content"]["results"]:
         body = json.loads(post["body"])
@@ -53,7 +53,12 @@ def pottermore_page(tag: str, url: str, name: str, description: str) -> str:
         # The actual text must be rebuilt from the multiple sections.
         description = body.get("intro", "")
         for section in body["section"]:
-            section_type = section["contentTypeId"]
+            print(section)
+            section_type = section.get("contentTypeId")
+
+            # Skip links, etc.
+            if section_type is None:
+                continue
 
             if section_type == "textSection":
                 description += section["text"]
