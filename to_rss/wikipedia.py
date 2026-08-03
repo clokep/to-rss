@@ -33,6 +33,36 @@ def get_article(url: str) -> str:
     return response.text
 
 
+def extract_content(wikicode: mwparserfromhell.wikicode.Wikicode):
+    """
+    Returns a day's news items as Wikicode, or None if they can't be found.
+
+    Current event pages come in two layouts. Historically a single
+    ``{{Current events}}`` template carried the whole day in its ``content``
+    parameter. Newer pages instead sandwich the news between two copies of the
+    template, marked ``top=yes`` and ``bottom=yes``, leaving the items in the
+    article body between them.
+    """
+    templates = [
+        template
+        for template in wikicode.filter_templates(recursive=False)
+        if template.name == "Current events"
+    ]
+    if not templates:
+        return None
+
+    # Legacy layout: the news is a parameter of the template.
+    for template in templates:
+        if template.has("content"):
+            return template.get("content").value
+
+    # Current layout: the news is whatever follows the opening template, up to
+    # the closing one (dropped along with anything after it).
+    start = wikicode.index(templates[0]) + 1
+    end = wikicode.index(templates[-1]) if len(templates) > 1 else len(wikicode.nodes)
+    return mwparserfromhell.wikicode.Wikicode(wikicode.nodes[start:end])
+
+
 def get_articles() -> str:
     """
     Returns a map of dates to a list of current events on that date.
@@ -71,32 +101,27 @@ def get_articles() -> str:
 
         with start_span(op="wiki-to-html", name="Convert " + url):
             # Current event pages have a top-level template.
-            for template in wikicode.ifilter_templates():
-                if template.name == "Current events":
-                    content = template.get("content").value
-
-                    try:
-                        # Convert the Wikicode to HTML.
-                        result = composer.compose(content)
-                    except mwcomposerfromhell.HtmlComposingError:
-                        logger.error("Unable to render article from: %s", day)
-                        continue
-
-                    # Add the results to the RSS feed.
-                    feed.add_item(
-                        title=f"Current events: {day}",
-                        link=url,
-                        description=result,
-                        pubdate=datetime(*day.timetuple()[:3]),
-                    )
-
-                    # Stop processing this article.
-                    break
-
-            else:
+            content = extract_content(wikicode)
+            if content is None:
                 logger.error(
                     f"'Current events' template not found in article for {day}"
                 )
+                continue
+
+            try:
+                # Convert the Wikicode to HTML.
+                result = composer.compose(content)
+            except mwcomposerfromhell.HtmlComposingError:
+                logger.error("Unable to render article from: %s", day)
+                continue
+
+            # Add the results to the RSS feed.
+            feed.add_item(
+                title=f"Current events: {day}",
+                link=url,
+                description=result,
+                pubdate=datetime(*day.timetuple()[:3]),
+            )
 
     if len(feed.items) == 0:
         logger.error("Created empty feed for Wikipedia current events")
