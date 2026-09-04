@@ -30,10 +30,10 @@ def _reload(c):
 @task(post=[_reload])
 def deploy(c):
     """Deploy a new version of to-rss."""
-    with c.cd("to-rss"):
+    with c.cd("to-rs"):
         print("Fetching new code.")
         c.run("git fetch")
         c.run("git reset --hard origin/main")
 
-        print("Cleaning old Python files.")
-        c.run("pyclean .")
+        print("Cleaning old files.")
+        c.run("git clean -dxf")
