@@ -142,13 +142,6 @@ def serve_pottermore_features():
     return Response(pottermore_features(), mimetype="application/rss+xml")
 
 
-# Thunderbird endpoints.
-@app.route("/thunderbird/")
-def serve_thunderbird():
-    template = env.get_template("thunderbird.html")
-    return template.render()
-
-
 # The Players Tribune endpoints.
 @app.route("/players_tribune/")
 def serve_players_tribune():
