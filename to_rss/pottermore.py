@@ -4,6 +4,7 @@ from typing import Any
 
 import iso8601
 import markdown
+from sentry_sdk import start_span
 
 from to_rss import get_session
 from to_rss.rss import ImageEnclosure, RssFeed
@@ -45,7 +46,15 @@ def pottermore_page(tag: str, url: str, name: str, description: str) -> str:
     feed = RssFeed(name, BASE_URL + "/" + tag, description)
 
     # Get all the items, then reach into the JSON to get each post.
-    data = get_items(tag)
+    with start_span(op="fetch-posts", name=f"Fetch posts: {tag}"):
+        data = get_items(tag)
+
+    with start_span(op="build-items", name=f"Build items: {tag}"):
+        return _add_items(feed, data, url)
+
+
+def _add_items(feed: RssFeed, data: Any, url: str) -> str:
+    """Turn each post in an API response into an item in the feed."""
     for post in data["data"]["content"]["results"]:
         body = json.loads(post["body"])
         title = body["displayTitle"]
@@ -53,7 +62,6 @@ def pottermore_page(tag: str, url: str, name: str, description: str) -> str:
         # The actual text must be rebuilt from the multiple sections.
         description = body.get("intro", "")
         for section in body["section"]:
-            print(section)
             section_type = section.get("contentTypeId")
 
             # Skip links, etc.
@@ -137,7 +145,8 @@ def pottermore_page(tag: str, url: str, name: str, description: str) -> str:
     if len(feed.items) == 0:
         logger.error(f"Created empty feed for {url}")
 
-    return feed.writeString("utf-8")
+    with start_span(op="write-rss", name=f"Write RSS: {url}"):
+        return feed.writeString("utf-8")
 
 
 def pottermore_news() -> str:
