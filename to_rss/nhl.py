@@ -1,4 +1,5 @@
 import logging
+import re
 import sys
 from datetime import datetime
 from urllib.parse import urljoin
@@ -35,6 +36,7 @@ VALID_TEAMS = {
     "canadiens": "Montréal Canadiens",
     "fr-canadiens": "Montréal Canadiens (FR)",
     "senators": "Ottawa Senators",
+    # fr-senators exists, but the news list is currently empty.
     "lightning": "Tampa Bay Lightning",
     "mapleleafs": "Toronto Maple Leafs",
     # Central division.
@@ -55,17 +57,17 @@ VALID_TEAMS = {
     "kraken": "Seattle Kraken",
     "canucks": "Vancouver Canucks",
     "goldenknights": "Vegas Golden Knights",
+    "es-goldenknights": "Vegas Golden Knights (ES)",
 }
 
 
 def _team_slug(name: str) -> str:
     """Generate a team slug from the name."""
-    # Special cases for Montréal, St. Louis, and French.
+    # Special cases for Montréal, St. Louis, and alternative language feeds.
     return (
-        name.lower()
+        re.sub(r" \([a-z]+\)", "", name.lower())
         .replace("é", "e")
         .replace(".", "")
-        .replace(" (fr)", "")
         .replace(" ", "-")
     )
 
@@ -131,6 +133,18 @@ def _fetch_items(page_url: str) -> list[dict]:
         else:
             pubdate = None
 
+        # Try to get a unique ID if available
+        unique_id = None
+        if hasattr(article, "get"):
+            unique_id = article.get("data-id") or article.get("id")
+
+        # Add categories if it's a game preview
+        categories = []
+        if "game-preview" in link:
+            categories.append("Game Preview")
+        if "game-recap" in link:
+            categories.append("Game Recap")
+
         items.append(
             {
                 "title": title,
@@ -138,6 +152,8 @@ def _fetch_items(page_url: str) -> list[dict]:
                 "description": description,
                 "pubdate": pubdate,
                 "enclosure": enclosure,
+                "unique_id": unique_id,
+                "categories": categories,
             }
         )
 
@@ -150,9 +166,22 @@ def _fetch_items(page_url: str) -> list[dict]:
 def _build_feed(name: str, page_url: str, items: list[dict]) -> str:
     feed = RssFeed(name, page_url, name)
 
+    # Team pages repeat articles in carousels and other modules, so keep only
+    # one item per link. Prefer the dated copy: carousel cards omit <time>.
+    deduped: dict[str, dict] = {}
+    for item in items:
+        existing = deduped.get(item["link"])
+        if existing is None or (existing["pubdate"] is None and item["pubdate"]):
+            deduped[item["link"]] = item
+
     # Interleave the items from both pages.
     for item in sorted(
-        items, key=lambda item: item.get("pubdate", datetime.min), reverse=True
+        deduped.values(),
+        key=lambda item: (
+            item.get("pubdate") is None,
+            item.get("pubdate") or datetime.min,
+        ),
+        reverse=True,
     ):
         feed.add_item(**item)
 
@@ -171,10 +200,8 @@ def nhl_news() -> str:
 
 
 def team_news(team: str) -> str:
-    if team == "fr-canadiens":
-        url = "fr/canadiens"
-    else:
-        url = team
+    # Language-prefixed keys (e.g. "fr-canadiens") map to nhl.com's localized path.
+    url = team.replace("-", "/")
 
     page_url = f"{BASE_URL}/{url}/news/"
     items = _fetch_items(page_url)
