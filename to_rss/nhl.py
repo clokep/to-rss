@@ -1,6 +1,7 @@
 import logging
 import sys
 from datetime import datetime
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
@@ -96,6 +97,10 @@ def _fetch_items(page_url: str) -> list[dict]:
                 logger.error("No article URL found")
                 continue
             link = anchor["href"]
+
+        # RSS requires absolute links; NHL serves these as site-relative paths.
+        assert isinstance(link, str)
+        link = urljoin(BASE_URL, link)
 
         # The content is split into two pieces that must be re-assembled.
         preview = article.find("div", class_="fa-text__body")
