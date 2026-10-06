@@ -11,6 +11,10 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = "https://www.nhl.com"
 
+# NHL files game previews under a topic page rather than in the news feed.
+# They are excluded from /news/ but still published at this URL.
+PREVIEWS_URL = f"{BASE_URL}/news/topic/game-previews/"
+
 # See https://www.nhl.com/info/teams
 VALID_TEAMS = {
     # Metropolitan division.
@@ -45,7 +49,7 @@ VALID_TEAMS = {
     "ducks": "Anaheim Ducks",
     "flames": "Calgary Flames",
     "oilers": "Edmonton Oilers",
-    "kings": "Las Angeles Kings",
+    "kings": "Los Angeles Kings",
     "sharks": "San Jose Sharks",
     "kraken": "Seattle Kraken",
     "canucks": "Vancouver Canucks",
@@ -53,14 +57,32 @@ VALID_TEAMS = {
 }
 
 
-def _get_news(name: str, page_url: str) -> str:
+def _team_slug(name: str) -> str:
+    """Generate a team slug from the name."""
+    # Special cases for Montréal, St. Louis, and French.
+    return (
+        name.lower()
+        .replace("é", "e")
+        .replace(".", "")
+        .replace(" (fr)", "")
+        .replace(" ", "-")
+    )
+
+
+# Team name to the slug used in game preview article URLs. They are slugified
+# versions of VALID_TEAMS with an override for fr-canadiens.
+TEAM_SLUGS = {team: _team_slug(name) for team, name in VALID_TEAMS.items()}
+
+
+def _fetch_items(page_url: str) -> list[dict]:
+    """Fetch a listing page and return one dict per article on it."""
     # Get the HTML page.
     response = get_session().get(page_url)
 
     # Process the HTML using BeautifulSoup!
     soup = BeautifulSoup(response.content, "html.parser")
 
-    feed = RssFeed(name, page_url, name)
+    items = []
 
     # Iterate over each article.
     for article in soup.find_all(class_="nhl-c-card-wrap"):
@@ -89,10 +111,14 @@ def _get_news(name: str, page_url: str) -> str:
         else:
             enclosure = None
 
-        if header:
+        # Some cards have neither a heading nor an image to title them.
+        if header and header.string:
             title = header.string
-        elif image:
-            title = image["alt"]
+        elif image and image.get("alt"):
+            title = str(image["alt"])
+        else:
+            logger.error(f"No article title found for {link}")
+            continue
 
         time = article.find("time")
         if time:
@@ -100,13 +126,30 @@ def _get_news(name: str, page_url: str) -> str:
         else:
             pubdate = None
 
-        feed.add_item(
-            title=title,
-            link=link,
-            description=description,
-            pubdate=pubdate,
-            enclosure=enclosure,
+        items.append(
+            {
+                "title": title,
+                "link": link,
+                "description": description,
+                "pubdate": pubdate,
+                "enclosure": enclosure,
+            }
         )
+
+    if len(items) == 0:
+        logger.error(f"Found no articles on {page_url}")
+
+    return items
+
+
+def _build_feed(name: str, page_url: str, items: list[dict]) -> str:
+    feed = RssFeed(name, page_url, name)
+
+    # Interleave the items from both pages.
+    for item in sorted(
+        items, key=lambda item: item.get("pubdate", datetime.min), reverse=True
+    ):
+        feed.add_item(**item)
 
     if len(feed.items) == 0:
         logger.error(f"Created empty feed for {page_url}")
@@ -115,7 +158,11 @@ def _get_news(name: str, page_url: str) -> str:
 
 
 def nhl_news() -> str:
-    return _get_news("NHL Headlines", f"{BASE_URL}/news/")
+    page_url = f"{BASE_URL}/news/"
+    items = _fetch_items(page_url)
+    previews = _fetch_items(PREVIEWS_URL)
+
+    return _build_feed("NHL Headlines", page_url, items + previews)
 
 
 def team_news(team: str) -> str:
@@ -124,7 +171,15 @@ def team_news(team: str) -> str:
     else:
         url = team
 
-    return _get_news(f"{VALID_TEAMS[team]} News", f"{BASE_URL}/{url}/news/")
+    page_url = f"{BASE_URL}/{url}/news/"
+    items = _fetch_items(page_url)
+    previews = _fetch_items(PREVIEWS_URL)
+
+    # Filter the game previews to only this team.
+    slug = TEAM_SLUGS[team]
+    previews = [item for item in previews if slug in item["link"]]
+
+    return _build_feed(f"{VALID_TEAMS[team]} News", page_url, items + previews)
 
 
 if __name__ == "__main__":
