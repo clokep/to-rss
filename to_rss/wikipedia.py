@@ -52,9 +52,10 @@ def extract_content(wikicode: mwparserfromhell.wikicode.Wikicode):
     if not templates:
         return None
 
-    # Legacy layout: the news is a parameter of the template.
+    # Legacy layout: the news is a parameter of the template. Editors sometimes
+    # leave an empty "content=" on a current layout page, which is ignored.
     for template in templates:
-        if template.has("content"):
+        if template.has("content") and template.get("content").value.strip():
             return template.get("content").value
 
     # Current layout: the news is whatever follows the opening template, up to

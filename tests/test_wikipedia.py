@@ -40,5 +40,11 @@ def test_extract_content_sandwich():
     assert "Current events" not in str(content)
 
 
+def test_extract_content_sandwich_empty_content_param():
+    article = SANDWICH_ARTICLE.replace("top=yes}}", "top=yes|content=}}", 1)
+    content = extract_content(mwparserfromhell.parse(article))
+    assert "[[Example conflict]]" in str(content)
+
+
 def test_extract_content_missing_template():
     assert extract_content(mwparserfromhell.parse("''Nothing to see here.''")) is None
