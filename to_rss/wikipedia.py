@@ -25,7 +25,7 @@ def get_current_events_by_date(lookup_date: date) -> str:
 
 def get_article(url: str) -> str:
     """Fetches and returns the article content as a string."""
-    with start_span(op="fetch-wikitext", name="Fetch " + url):
+    with start_span(name="Fetch " + url, attributes={"sentry.op": "fetch-wikitext"}):
         response = get_session().get(
             url,
             params={"action": "raw"},
@@ -98,10 +98,14 @@ def get_articles() -> str:
         )
         article = get_article(url)
         # Parse the article contents.
-        with start_span(op="parse-wikitext", name="Parse " + url):
+        with start_span(
+            name="Parse " + url, attributes={"sentry.op": "parse-wikitext"}
+        ):
             wikicode = mwparserfromhell.parse(article)
 
-        with start_span(op="wiki-to-html", name="Convert " + url):
+        with start_span(
+            name="Convert " + url, attributes={"sentry.op": "wiki-to-html"}
+        ):
             # Current event pages have a top-level template.
             content = extract_content(wikicode)
             if content is None:

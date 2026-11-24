@@ -29,4 +29,4 @@ gunicorn==26.0.0
 python-dotenv==1.2.2
 
 # For error reporting.
-sentry-sdk  # pyup: ignore
+sentry-sdk>=3  # pyup: ignore

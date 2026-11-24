@@ -46,10 +46,14 @@ def pottermore_page(tag: str, url: str, name: str, description: str) -> str:
     feed = RssFeed(name, BASE_URL + "/" + tag, description)
 
     # Get all the items, then reach into the JSON to get each post.
-    with start_span(op="fetch-posts", name=f"Fetch posts: {tag}"):
+    with start_span(
+        name=f"Fetch posts: {tag}", attributes={"sentry.op": "fetch-posts"}
+    ):
         data = get_items(tag)
 
-    with start_span(op="build-items", name=f"Build items: {tag}"):
+    with start_span(
+        name=f"Build items: {tag}", attributes={"sentry.op": "build-items"}
+    ):
         return _add_items(feed, data, url)
 
 
@@ -145,7 +149,7 @@ def _add_items(feed: RssFeed, data: Any, url: str) -> str:
     if len(feed.items) == 0:
         logger.error(f"Created empty feed for {url}")
 
-    with start_span(op="write-rss", name=f"Write RSS: {url}"):
+    with start_span(name=f"Write RSS: {url}", attributes={"sentry.op": "write-rss"}):
         return feed.writeString("utf-8")
 
 
